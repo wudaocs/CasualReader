@@ -14,3 +14,7 @@ dependencyResolutionManagement {
 }
 rootProject.name = "CasualReader"
 include ':app'
+include ':bookshelf'
+include ':market'
+include ':core'
+include ':network'
