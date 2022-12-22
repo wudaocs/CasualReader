@@ -1,6 +1,13 @@
 pluginManagement {
     repositories {
         gradlePluginPortal()
+        maven { url "https://www.jitpack.io" }
+        // google的maven仓库在阿里云上的镜像
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        // jcenter的maven仓库在阿里云上的镜像
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
+//        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+//        maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter' }
         google()
         mavenCentral()
     }
@@ -8,8 +15,16 @@ pluginManagement {
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
+        maven { url "https://www.jitpack.io" }
+        // google的maven仓库在阿里云上的镜像
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        // jcenter的maven仓库在阿里云上的镜像
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
+//        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+//        maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter' }
         google()
         mavenCentral()
+
     }
 }
 rootProject.name = "CasualReader"
