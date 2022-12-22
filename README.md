@@ -1,2 +1,5 @@
-# CasualReader
-reader -> casual
+# CasualReader 随心阅
+
+## 阅读器类功能集合
+
+包括书架、书城、阅读sdk等相关模块, 逐步完善
