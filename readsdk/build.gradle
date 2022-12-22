@@ -1,26 +1,23 @@
-import com.ltd_tech.build.DependsConfigs
 import com.ltd_tech.build.DependsKotlinConfigs
 import com.ltd_tech.build.DependsTestConfigs
-import com.ltd_tech.build.DependsUIConfigs
+import com.ltd_tech.build.DependsConfigs
 import com.ltd_tech.build.Versions
 
 plugins {
-    id 'com.android.application'
+    id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
 }
 
 android {
-    namespace 'com.ltd_tech.casualreader'
+    namespace 'com.ltd_tech.readsdk'
     compileSdk Versions.compileSdk
 
     defaultConfig {
-        applicationId "com.ltd_tech.casualreader"
         minSdk Versions.minSdk
-        targetSdk Versions.targetSdk
-        versionCode 1
-        versionName "1.0"
+        targetSdk Versions.compileSdk
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
     }
 
     buildTypes {
@@ -39,7 +36,6 @@ android {
 }
 
 dependencies {
-    implementation DependsUIConfigs.constraintlayout
     implementation DependsKotlinConfigs.core_ktx
     implementation DependsConfigs.appcompat
     implementation DependsConfigs.material
