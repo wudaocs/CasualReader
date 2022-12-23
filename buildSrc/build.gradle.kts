@@ -1,20 +1,13 @@
 plugins {
-    kotlin("jvm") version "1.4.32"
-    `kotlin-dsl`
+    kotlin("jvm") version "1.7.20"
+//    `kotlin-dsl`
 }
 
-dependencies {
-    implementation(gradleApi())
-}
+//dependencies {
+//    implementation(gradleApi())
+//}
 
 repositories {
     google()
     mavenCentral()
-}
-
-allprojects {
-    repositories {
-        mavenCentral()
-        google()
-    }
 }

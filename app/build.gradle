@@ -47,3 +47,10 @@ dependencies {
     testImplementation DependsTestConfigs.junit_ext
     testImplementation DependsTestConfigs.espresso
 }
+
+configurations.all() {
+    Configuration configuration ->
+        configuration.resolutionStrategy.force(DependsKotlinConfigs.kotlin_stdlib)
+        configuration.resolutionStrategy.force(DependsConfigs.androidx_arch)
+        configuration.resolutionStrategy.force(DependsUIConfigs.constraintlayout)
+}

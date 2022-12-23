@@ -14,7 +14,7 @@ object Versions {
     const val lifecycle = "2.2.0"
     const val retrofit = "2.6.0"
     const val okHttp = "4.9.0"
-    const val kotlin_version = "1.4.32"
+    const val kotlin_version = "1.7.20"
     const val support_code = "1.2.0-beta01"
 }
 
@@ -22,13 +22,15 @@ object Versions {
  * android 版本相关
  */
 object DependsConfigs {
-    const val appcompat = "androidx.appcompat:appcompat:1.4.1"
-    const val material = "com.google.android.material:material:1.5.0"
+    const val appcompat = "androidx.appcompat:appcompat:1.5.0"
+    const val material = "com.google.android.material:material:1.7.0"
     const val lifecycle_extensions = "androidx.lifecycle:lifecycle-extensions:$lifecycle"
     const val lifecycle_viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
     const val livedata = "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle"
     const val lifecycle_runtimektx = "androidx.lifecycle:lifecycle-runtime-ktx:2.3.0-alpha02"
     const val databinding_compiler = "androidx.databinding:databinding-compiler:1.0.0"
+
+    const val androidx_arch = "androidx.arch.core:core-runtime:2.1.0"
 
     // 网络库相关
     const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
@@ -41,8 +43,10 @@ object DependsConfigs {
     const val support_annotations = "androidx.annotation:annotation:$support_code"
 
     const val gson = "com.google.code.gson:gson:2.8.6"
+
     //项目方法过多，需要分割
     const val multidex = "androidx.multidex:multidex:2.0.0"
+
     //二维码扫描
     const val zxing = "com.google.zxing:core:3.4.0"
 
@@ -59,7 +63,6 @@ object DependsConfigs {
     const val isoparser = "com.googlecode.mp4parser:isoparser:1.1.22"
 
 
-
 }
 
 object DependsUIConfigs {
@@ -70,14 +73,19 @@ object DependsUIConfigs {
 
     const val SVGAPlayer = "com.github.svga:SVGAPlayer-Android:2.5.14"
     const val SVGWireRuntime = "com.squareup.wire:wire-runtime:3.5.0"
+
     //万能的自定义日历框架
     const val calendarview = "com.haibin:calendarview:3.6.2"
+
     //圆图框架
     const val roundedimageview = "com.makeramen:roundedimageview:2.3.0"
+
     //优化 RecyclerViewAdapterHelper
-    const val BaseRecyclerViewAdapterHelper = "com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30"
+    const val BaseRecyclerViewAdapterHelper =
+        "com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30"
 
     const val smartRefreshLayout = "com.scwang.smartrefresh:SmartRefreshLayout:1.1.0"
+
     //导航栏
     const val flycoTabLayout = "com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2@aar"
 
@@ -91,15 +99,15 @@ object DependsUIConfigs {
  * kotlin 版本相关
  */
 object DependsKotlinConfigs {
-    const val core_ktx = "androidx.core:core-ktx:1.7.0"
-    const val activity_ktx = "androidx.activity:activity-ktx:1.1.0"
-    const val fragment_ktx = "androidx.fragment:fragment-ktx:1.2.5"
+    const val core_ktx = "androidx.core:core-ktx:1.8.0"
+    const val activity_ktx = "androidx.activity:activity-ktx:1.6.0"
+    const val fragment_ktx = "androidx.fragment:fragment-ktx:1.5.5"
     const val kotlinx_coroutines_core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.0"
     const val kotlinx_coroutines_android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.0"
     const val kotlin_coroutines_adapter =
         "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2"
     const val work_runtime_ktx = "androidx.work:work-runtime-ktx:2.3.4"
-    const val kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib:${Versions.kotlin_version}"
+    const val kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin_version}"
 }
 
 /**
@@ -132,12 +140,16 @@ object DependsThirdsConfigs {
     //图片加载框架
     const val glide = "com.github.bumptech.glide:glide:4.10.0"
     const val glide_compiler = "com.github.bumptech.glide:compiler:4.10.0"
+
     //glide各种样式的图片转换
     const val glide_transformations = "jp.wasabeef:glide-transformations:4.1.0"
+
     //下载框架
     const val filedownloader = "com.liulishuo.filedownloader:library:1.7.7"
+
     //时间选择器
     const val pickerView = "com.contrarywind:Android-PickerView:4.1.9"
+
     //消息总线，基于LiveData
     const val livebus = "com.jeremyliao:live-event-bus-x:1.5.7"
 
@@ -151,14 +163,19 @@ object DependsThirdsConfigs {
     const val easypermissions = "pub.devrel:easypermissions:3.0.0"
 
     const val AndroidAudioConverter = "com.github.adrielcafe:AndroidAudioConverter:0.0.8"
+
     //CacheWebView通过拦截资源实现自定义缓存静态资源。突破WebView缓存空间限制，让缓存更简单。让网站离线也能正常访问
     const val web_cache = "ren.yale.android:cachewebviewlib:2.1.8"
+
     //友盟
     const val umeng_analytics = "com.umeng.analytics:analytics:latest.integration"
+
     //日志框架
     const val logger = "com.orhanobut:logger:2.2.0"
+
     //网页解析工具
     const val jsoup = "org.jsoup:jsoup:1.11.3"
+
     //  生成充值二维码和扫描二维码的库
     const val zxing_lite = "com.king.zxing:zxing-lite:1.1.9-androidx"
 
