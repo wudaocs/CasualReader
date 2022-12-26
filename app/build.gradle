@@ -46,6 +46,8 @@ dependencies {
     testImplementation DependsTestConfigs.junit
     testImplementation DependsTestConfigs.junit_ext
     testImplementation DependsTestConfigs.espresso
+
+    implementation project(':base:core')
 }
 
 configurations.all() {
