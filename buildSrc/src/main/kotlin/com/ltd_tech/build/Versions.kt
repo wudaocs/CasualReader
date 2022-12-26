@@ -27,7 +27,7 @@ object DependsConfigs {
     const val lifecycle_extensions = "androidx.lifecycle:lifecycle-extensions:$lifecycle"
     const val lifecycle_viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
     const val livedata = "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle"
-    const val lifecycle_runtimektx = "androidx.lifecycle:lifecycle-runtime-ktx:2.3.0-alpha02"
+    const val lifecycle_runtime_ktx = "androidx.lifecycle:lifecycle-runtime-ktx:2.3.0-alpha02"
     const val databinding_compiler = "androidx.databinding:databinding-compiler:1.0.0"
 
     const val androidx_arch = "androidx.arch.core:core-runtime:2.1.0"
@@ -154,8 +154,8 @@ object DependsThirdsConfigs {
     const val livebus = "com.jeremyliao:live-event-bus-x:1.5.7"
 
     //阿里路由框架
-    const val ARouter_api = "com.alibaba:arouter-api:1.5.0"
-    const val ARouter_compiler = "com.alibaba:arouter-compiler:1.2.2"
+    const val ARouter_api = "com.alibaba:arouter-api:1.5.2"
+    const val ARouter_compiler = "com.alibaba:arouter-compiler:1.5.2"
 
     const val JIMU = "com.github.jimu:componentlib:1.3.3"
 

@@ -1,11 +1,14 @@
 import com.ltd_tech.build.DependsKotlinConfigs
 import com.ltd_tech.build.DependsTestConfigs
 import com.ltd_tech.build.DependsConfigs
+import com.ltd_tech.build.DependsThirdsConfigs
 import com.ltd_tech.build.Versions
 
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id 'com.alibaba.arouter'
 }
 
 android {
@@ -18,6 +21,20 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
+
+        multiDexEnabled true
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName()]
+            }
+        }
+
+        kapt {
+            arguments {
+                arg("AROUTER_MODULE_NAME", project.getName())
+            }
+        }
     }
 
     buildTypes {
@@ -42,4 +59,7 @@ dependencies {
     testImplementation DependsTestConfigs.junit
     testImplementation DependsTestConfigs.junit_ext
     testImplementation DependsTestConfigs.espresso
+
+    implementation DependsThirdsConfigs.ARouter_api
+    kapt DependsThirdsConfigs.ARouter_compiler
 }

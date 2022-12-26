@@ -2,17 +2,17 @@ import org.gradle.internal.component.external.model.ComponentVariant
 
 pluginManagement {
     repositories {
+        mavenCentral()
         gradlePluginPortal()
         google()
-        mavenCentral()
         maven { url "https://jitpack.io" }
     }
 }
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.PREFER_PROJECT)
     repositories {
-        google()
         mavenCentral()
+        google()
         maven { url 'https://jitpack.io' }
     }
 }
