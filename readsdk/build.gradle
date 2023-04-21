@@ -9,6 +9,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'com.alibaba.arouter'
+    id 'org.greenrobot.greendao'
 }
 
 android {
@@ -50,16 +51,33 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+}
+
+greendao {
+    //数据库的schema版本，也可以理解为数据库版本号，如果版本升级，数据库表字段发生变化，必须要升级
+    schemaVersion 1
+    daoPackage 'com.ltd_tech.readsdk'
+    targetGenDir 'src/main/java'
 }
 
 dependencies {
     implementation DependsKotlinConfigs.core_ktx
     implementation DependsConfigs.appcompat
     implementation DependsConfigs.material
+
+    implementation DependsKotlinConfigs.kotlinx_coroutines_android
+
     testImplementation DependsTestConfigs.junit
     testImplementation DependsTestConfigs.junit_ext
     testImplementation DependsTestConfigs.espresso
 
+    api DependsThirdsConfigs.greenDao
+
     implementation DependsThirdsConfigs.ARouter_api
     kapt DependsThirdsConfigs.ARouter_compiler
+
+    implementation project(':base:core')
+
+    implementation(name: 'lib-opencc-android', ext: 'aar')
 }

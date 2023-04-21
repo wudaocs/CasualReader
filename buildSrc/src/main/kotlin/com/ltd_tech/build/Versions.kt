@@ -182,4 +182,6 @@ object DependsThirdsConfigs {
     // Google Mobile Services -> com.google.firebase:firebase-appindexing:10.0.1
     const val gmsAppindexing = "com.google.android.gms:play-services-appindexing:8.1.0"
 
+    const val greenDao = "org.greenrobot:greendao:3.3.0"
+
 }

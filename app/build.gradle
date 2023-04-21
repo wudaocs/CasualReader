@@ -10,6 +10,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'com.alibaba.arouter'
+    id 'org.greenrobot.greendao'
 }
 
 android {
@@ -53,6 +54,12 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+    repositories {
+        flatDir {
+            dirs 'libs'
+        }
+    }
 }
 
 dependencies {
@@ -69,6 +76,7 @@ dependencies {
     kapt DependsThirdsConfigs.ARouter_compiler
 
     implementation project(':base:core')
+    implementation project(':readsdk')
 }
 
 configurations.all() {
