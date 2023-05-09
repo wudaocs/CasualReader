@@ -19,9 +19,3 @@ apply(from: "versions.gradle")
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
-
-//repositories {
-//    flatDir {
-//        dirs 'libs', project(':readsdk').file('libs') // aar目录
-//    }
-//}

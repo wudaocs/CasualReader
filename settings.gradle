@@ -1,4 +1,3 @@
-import org.gradle.internal.component.external.model.ComponentVariant
 
 pluginManagement {
     repositories {
@@ -17,8 +16,6 @@ dependencyResolutionManagement {
     }
 }
 
-//apply from: 'versions.gradle'
-
 rootProject.name = "CasualReader"
 include ':app'
 include ':bookshelf'
@@ -26,5 +23,3 @@ include ':market'
 include ':base:core'
 include ':base:network'
 include ':readsdk'
-
-

@@ -45,12 +45,6 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-
-//    repositories {
-//        flatDir {
-//            dirs 'libs'   // aar目录
-//        }
-//    }
 }
 
 greendao {
@@ -80,5 +74,5 @@ dependencies {
 
     implementation project(':base:core')
 
-    implementation(name: 'lib-opencc-android', ext: 'aar')
+    implementation files('libs/lib-opencc-android.aar')
 }
