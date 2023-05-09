@@ -2,13 +2,35 @@ package com.ltd_tech.readsdk.entities;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.ToMany;
+
+import java.util.List;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.DaoException;
+import com.ltd_tech.readsdk.entities.dao.DaoSession;
+import com.ltd_tech.readsdk.entities.dao.BookChapterTableDao;
+import com.ltd_tech.readsdk.entities.dao.BookEntityDao;
 
 /**
  * CollBookBean
  */
 @Entity
 public class BookEntity {
+
+    /**
+     * _id : 53663ae356bdc93e49004474
+     * title : 逍遥派
+     * author : 白马出淤泥
+     * shortIntro : 金庸武侠中有不少的神秘高手，书中或提起名字，或不曾提起，总之他们要么留下了绝世秘笈，要么就名震武林。 独孤九剑的创始者，独孤求败，他真的只创出九剑吗？ 残本葵花...
+     * cover : /cover/149273897447137
+     * hasCp : true
+     * latelyFollower : 60213
+     * retentionRatio : 22.87
+     * updated : 2017-05-07T18:24:34.720Z
+     *
+     * chaptersCount : 1660
+     * lastChapter : 第1659章 朱长老
+     */
     // 本地书籍中，path 的 md5 值作为本地书籍的 id
     @Id
     private String _id;
@@ -32,11 +54,19 @@ public class BookEntity {
     //是否是本地文件
     private boolean isLocal = false;
 
+    @ToMany(referencedJoinProperty = "bookId")
+    private List<BookChapterTable> bookChapterList;
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /** Used for active entity operations. */
+    @Generated(hash = 492744051)
+    private transient BookEntityDao myDao;
+
     @Generated(hash = 298493127)
-    public BookEntity(String _id, String title, String author, String shortIntro,
-            String cover, boolean hasCp, int latelyFollower, double retentionRatio,
-            String updated, String lastRead, int chaptersCount, String lastChapter,
-            boolean isUpdate, boolean isLocal) {
+    public BookEntity(String _id, String title, String author, String shortIntro, String cover,
+            boolean hasCp, int latelyFollower, double retentionRatio, String updated, String lastRead,
+            int chaptersCount, String lastChapter, boolean isUpdate, boolean isLocal) {
         this._id = _id;
         this.title = title;
         this.author = author;
@@ -187,5 +217,76 @@ public class BookEntity {
 
     public void setIsLocal(boolean isLocal) {
         this.isLocal = isLocal;
+    }
+
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 1777582441)
+    public List<BookChapterTable> getBookChapterList() {
+        if (bookChapterList == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            BookChapterTableDao targetDao = daoSession.getBookChapterTableDao();
+            List<BookChapterTable> bookChapterListNew = targetDao._queryBookEntity_BookChapterList(_id);
+            synchronized (this) {
+                if (bookChapterList == null) {
+                    bookChapterList = bookChapterListNew;
+                }
+            }
+        }
+        return bookChapterList;
+    }
+
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    @Generated(hash = 1077762221)
+    public synchronized void resetBookChapterList() {
+        bookChapterList = null;
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 128553479)
+    public void delete() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.delete(this);
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 1942392019)
+    public void refresh() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.refresh(this);
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 713229351)
+    public void update() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.update(this);
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 1364325922)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getBookEntityDao() : null;
     }
 }

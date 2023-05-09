@@ -16,6 +16,9 @@ dependencyResolutionManagement {
         maven { url 'https://jitpack.io' }
     }
 }
+
+//apply from: 'versions.gradle'
+
 rootProject.name = "CasualReader"
 include ':app'
 include ':bookshelf'

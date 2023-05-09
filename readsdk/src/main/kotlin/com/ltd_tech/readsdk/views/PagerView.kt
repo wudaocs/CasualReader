@@ -1,6 +1,7 @@
 package com.ltd_tech.core.widgets.pager
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.RectF
 import android.util.AttributeSet
@@ -289,6 +290,14 @@ class PagerView @JvmOverloads constructor(
 
     fun setBgColor(color: Int) {
         mBgColor = color
+    }
+
+    fun getNextBitmap(): Bitmap? {
+        return mPageAnim?.getNextBitmap()
+    }
+
+    fun getBgBitmap(): Bitmap? {
+        return  mPageAnim?.getBgBitmap()
     }
 
 }

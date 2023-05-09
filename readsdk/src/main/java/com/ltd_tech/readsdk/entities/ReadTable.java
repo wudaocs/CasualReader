@@ -4,11 +4,15 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
 
+import java.io.Serializable;
+
 /**
  * BookRecordBean
  */
 @Entity
-public class ReadTable {
+public class ReadTable implements Serializable {
+
+    public static final long serialVersionUID = 536871008;
     //所属的书的id
     @Id
     private String bookId;

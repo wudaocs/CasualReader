@@ -1,9 +1,3 @@
-import com.ltd_tech.build.DependsConfigs
-import com.ltd_tech.build.DependsKotlinConfigs
-import com.ltd_tech.build.DependsTestConfigs
-import com.ltd_tech.build.DependsThirdsConfigs
-import com.ltd_tech.build.Versions
-
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
@@ -53,13 +47,14 @@ android {
 }
 
 dependencies {
-    implementation DependsKotlinConfigs.core_ktx
-    implementation DependsConfigs.appcompat
-    implementation DependsConfigs.material
-    testImplementation DependsTestConfigs.junit
-    testImplementation DependsTestConfigs.junit_ext
-    testImplementation DependsTestConfigs.espresso
+    implementation dependsKotlinConfigs.core_ktx
+    implementation dependsConfigs.appcompat
+    implementation dependsConfigs.material
+    implementation 'androidx.core:core-ktx:+'
+    testImplementation dependsTestConfigs.junit
+    testImplementation dependsTestConfigs.junit_ext
+    testImplementation dependsTestConfigs.espresso
 
-    implementation DependsThirdsConfigs.ARouter_api
-    kapt DependsThirdsConfigs.ARouter_compiler
+    implementation dependsThirdsConfigs.ARouter_api
+    kapt dependsThirdsConfigs.ARouter_compiler
 }

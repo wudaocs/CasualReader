@@ -3,14 +3,16 @@ package com.ltd_tech.readsdk.repo
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import com.ltd_tech.core.utils.application
-import com.ltd_tech.readsdk.BookEntityDao
-import com.ltd_tech.readsdk.DaoMaster
-import com.ltd_tech.readsdk.DaoSession
-import com.ltd_tech.readsdk.ReadTableDao
 import com.ltd_tech.readsdk.entities.ReadTable
+import com.ltd_tech.readsdk.entities.dao.DaoMaster
+import com.ltd_tech.readsdk.entities.dao.DaoSession
+import com.ltd_tech.readsdk.entities.dao.ReadTableDao
 import org.greenrobot.greendao.database.Database
 
-class StorageRepository {
+/**
+ * 本地数据操作类
+ */
+internal class StorageRepository {
 
     private val daoMaster: DaoManager = DaoManager()
 

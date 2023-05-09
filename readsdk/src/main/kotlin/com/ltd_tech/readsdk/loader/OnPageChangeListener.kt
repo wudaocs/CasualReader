@@ -22,7 +22,7 @@ interface OnPageChangeListener {
      *
      * @param chapters：返回章节目录
      */
-    fun onCategoryFinish(chapters: List<TxtChapter>)
+    fun onCategoryFinish(chapters: List<TxtChapter>?)
 
     /**
      * 作用：章节页码数量改变之后的回调。==> 字体大小的调整，或者是否关闭虚拟按钮功能都会改变页面的数量。

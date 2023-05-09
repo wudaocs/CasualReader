@@ -1,299 +1,126 @@
 package com.ltd_tech.readsdk.loader
 
-import android.graphics.Bitmap
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Typeface
-import android.text.TextPaint
-import androidx.core.content.ContextCompat
 import com.ltd_tech.core.entities.TxtChapter
 import com.ltd_tech.core.entities.TxtPage
 import com.ltd_tech.core.utils.F
-import com.ltd_tech.core.utils.ScreenUtil
 import com.ltd_tech.core.utils.StringUtils
-import com.ltd_tech.core.widgets.pager.PageMode
-import com.ltd_tech.core.widgets.pager.PageStyle
 import com.ltd_tech.core.widgets.pager.PagerView
-import com.ltd_tech.core.widgets.pager.ReadConfigManager
 import com.ltd_tech.readsdk.entities.BookEntity
-import com.ltd_tech.readsdk.entities.ReadTable
 import com.ltd_tech.readsdk.utils.DataControls
 import kotlinx.coroutines.*
 import java.io.BufferedReader
 import java.io.FileNotFoundException
 import java.io.IOException
 
-abstract class PageLoader(private val mPageView: PagerView, private val mBookEntity: BookEntity) {
-
-    companion object {
-        // 当前页面的状态
-        const val STATUS_LOADING = 1 // 正在加载
-        const val STATUS_FINISH = 2 // 加载完成
-        const val STATUS_ERROR = 3 // 加载错误 (一般是网络加载情况)
-        const val STATUS_EMPTY = 4 // 空数据
-        const val STATUS_PARING = 5 // 正在解析 (装载本地数据)
-        const val STATUS_PARSE_ERROR = 6 // 本地文件解析错误(暂未被使用)
-        const val STATUS_CATEGORY_EMPTY = 7 // 获取到的目录为空
-
-        // 默认的显示参数配置
-        private const val DEFAULT_MARGIN_HEIGHT = 28
-        private const val DEFAULT_MARGIN_WIDTH = 15
-        private const val DEFAULT_TIP_SIZE = 12
-        private const val EXTRA_TITLE_SIZE = 4
-    }
-
-    // 当前章节列表
-    protected var mChapterList: List<TxtChapter>? = null
-
-    // 书本对象
-//    protected var mBookEntity: BookEntity? = null
-
-    // 页面显示类
-//    private var mPageView: PagerView? = null
-
-    // 当前显示的页
-    private var mCurPage: TxtPage? = null
-
-    // 上一章的页面列表缓存
-    private var mPrePageList: List<TxtPage>? = null
-
-    // 当前章节的页面列表
-    private var mCurPageList: List<TxtPage>? = null
-
-    // 下一章的页面列表缓存
-    private var mNextPageList: List<TxtPage>? = null
-
-    // 绘制电池的画笔
-    private var mBatteryPaint: Paint? = null
-
-    // 绘制提示的画笔
-    private var mTipPaint: Paint? = null
-
-    // 绘制标题的画笔
-    private var mTitlePaint: Paint? = null
-
-    // 绘制背景颜色的画笔(用来擦除需要重绘的部分)
-    private var mBgPaint: Paint? = null
-
-    // 绘制小说内容的画笔
-    private var mTextPaint: TextPaint? = null
+/**
+ * 内容加载器
+ */
+abstract class PageLoader(private val mPageView: PagerView, private val mBookEntity: BookEntity) :
+    PageDrawLoader(mPageView, mBookEntity) {
 
     // 被遮盖的页，或者认为被取消显示的页
     private var mCancelPage: TxtPage? = null
 
-    // 监听器
-    protected var mPageChangeListener: OnPageChangeListener? = null
+    /**
+     * 设置页面切换监听
+     * @param listener
+     */
+    fun setOnPageChangeListener(listener: OnPageChangeListener) {
+        mPageChangeListener = listener
 
-    // 当前的状态
-    protected var mStatus = STATUS_LOADING
-
-    // 判断章节列表是否加载完成
-    protected var isChapterListPrepare = false
+        // 如果目录加载完之后才设置监听器，那么会默认回调
+        if (isChapterListPrepare) {
+            mPageChangeListener?.onCategoryFinish(mChapterList)
+        }
+    }
 
     // 是否打开过章节
-    private val isChapterOpen = false
-    private val isFirstOpen = true
+    private var isChapterOpen = false
+    private var isFirstOpen = true
     private val isClose = false
-
-    // 页面的翻页效果模式
-    private var mPageMode: PageMode? = null
-
-    // 加载器的颜色主题
-    private var mPageStyle: PageStyle? = null
-
-
-    //当前是否是夜间模式
-    private var isNightMode = false
-
-    //书籍绘制区域的宽高
-    private val mVisibleWidth = 0
-    private val mVisibleHeight = 0
-
-    //应用的宽高
-    private val mDisplayWidth = 0
-    private val mDisplayHeight = 0
-
-    //间距
-    private var mMarginWidth = 0
-    private var mMarginHeight = 0
-
-    //字体的颜色
-    private var mTextColor = 0
-
-    //标题的大小
-    private var mTitleSize = 0
-
-    //字体的大小
-    private var mTextSize = 0
-
-    //行间距
-    private var mTextInterval = 0
-
-    //标题的行间距
-    private var mTitleInterval = 0
-
-    //段落距离(基于行间距的额外距离)
-    private var mTextPara = 0
-    private var mTitlePara = 0
-
-    //电池的百分比
-    private val mBatteryLevel = 0
-
-    //当前页面的背景
-    private var mBgColor = 0
-
-    // 当前章
-    protected var mCurChapterPos = 0
-
-    //上一章的记录
-    private var mLastChapterPos = 0
-
-    private var mReadTable: ReadTable? = null
 
     private var coroutinesScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
-    init {
-        mChapterList = mutableListOf()
+    fun prepareDisplay(width: Int, height: Int) {
+        // 获取PageView的宽高
+        mDisplayWidth = width
+        mDisplayHeight = height
 
-        // 初始化数据
-        initData()
-        // 初始化画笔
-        initPaint()
-        // 初始化PageView
-        initPageView()
-        // 初始化书籍
-        prepareBook()
-    }
+        // 获取内容显示位置的大小
+        mVisibleWidth = mDisplayWidth - mMarginWidth * 2
+        mVisibleHeight = mDisplayHeight - mMarginHeight * 2
 
-    private fun initData() {
-        // 获取配置管理器
-        // 获取配置参数
-        mPageMode = ReadConfigManager.getPageMode()
-        mPageStyle = ReadConfigManager.getPageStyle()
-        // 初始化参数
-        mMarginWidth = ScreenUtil.dpToPx(DEFAULT_MARGIN_WIDTH)
-        mMarginHeight = ScreenUtil.dpToPx(DEFAULT_MARGIN_HEIGHT)
-        // 配置文字有关的参数
-        setUpTextParams(ReadConfigManager.getTextSize())
-    }
+        // 重置 PageMode
+        mPageView.setPageMode(mPageMode)
 
-    /**
-     * 作用：设置与文字相关的参数
-     */
-    private fun setUpTextParams(textSize: Int) {
-        // 文字大小
-        mTextSize = textSize
-        mTitleSize = mTextSize + ScreenUtil.spToPx(EXTRA_TITLE_SIZE)
-        // 行间距(大小为字体的一半)
-        mTextInterval = mTextSize / 2
-        mTitleInterval = mTitleSize / 2
-        // 段落间距(大小为字体的高度)
-        mTextPara = mTextSize
-        mTitlePara = mTitleSize
-    }
-
-    private fun initPaint() {
-        // 绘制提示的画笔
-        mTipPaint = Paint().apply {
-            color = mTextColor
-            textAlign = Paint.Align.LEFT // 绘制的起始点
-            textSize = ScreenUtil.spToPx(DEFAULT_TIP_SIZE).toFloat()// Tip默认的字体大小
-            isAntiAlias = true
-            isSubpixelText = true
-        }
-
-        // 绘制页面内容的画笔
-        mTextPaint = TextPaint().apply {
-            color = mTextColor
-            textSize = mTextSize.toFloat()
-            isAntiAlias = true
-        }
-
-        // 绘制标题的画笔
-        mTitlePaint = TextPaint().apply {
-            color = mTextColor
-            textSize = mTitleSize.toFloat()
-            style = Paint.Style.FILL_AND_STROKE
-            typeface = Typeface.DEFAULT_BOLD
-            isAntiAlias = true
-        }
-
-        // 绘制背景的画笔
-        mBgPaint = Paint().apply {
-            color = mBgColor
-        }
-
-        // 绘制电池的画笔
-        mBatteryPaint = Paint().apply {
-            isAntiAlias = true
-            isDither = true
-        }
-
-        // 初始化页面样式
-        setNightMode(ReadConfigManager.isNightMode())
-    }
-
-    /**
-     * 设置夜间模式
-     */
-    open fun setNightMode(nightMode: Boolean) {
-        ReadConfigManager.setNightMode(nightMode)
-        isNightMode = nightMode
-        if (isNightMode) {
-            mBatteryPaint?.color = Color.WHITE
-            setPageStyle(PageStyle.NIGHT)
+        if (!isChapterOpen) {
+            // 展示加载界面
+            mPageView.drawCurPage(false)
+            // 如果在 display 之前调用过 openChapter 肯定是无法打开的。
+            // 所以需要通过 display 再重新调用一次。
+            if (!isFirstOpen) {
+                // 打开书籍
+                openChapter()
+            }
         } else {
-            mBatteryPaint?.color = Color.BLACK
-            setPageStyle(mPageStyle)
+            // 如果章节已显示，那么就重新计算页面
+            if (mStatus == STATUS_FINISH) {
+                dealLoadPageList(mCurChapterPos)
+                // 重新设置文章指针的位置
+                mCurPage = getCurPage(mCurPage?.position ?: 0)
+            }
+            mPageView.drawCurPage(false)
         }
     }
 
-
     /**
-     * 设置页面样式
+     * 打开指定章节
      */
-    fun setPageStyle(pageStyle: PageStyle?) {
-        if (pageStyle != PageStyle.NIGHT) {
-            mPageStyle = pageStyle
-            ReadConfigManager.setPageStyle(pageStyle)
-        }
-        if (isNightMode && pageStyle != PageStyle.NIGHT) {
+    fun openChapter() {
+        isFirstOpen = false
+        if (!mPageView.isPrepare()) {
             return
         }
 
-        // 设置当前颜色样式
-        pageStyle?.run {
-            mTextColor = ContextCompat.getColor(mPageView.context, fontColor)
-            mBgColor = ContextCompat.getColor(mPageView.context, bgColor)
+        // 如果章节目录没有准备好
+        if (!isChapterListPrepare) {
+            mStatus = STATUS_LOADING
+            mPageView.drawCurPage(false)
+            return
         }
 
-        mTipPaint?.color = mTextColor
-        mTitlePaint?.color = mTextColor
-        mTextPaint?.color = mTextColor
-        mBgPaint?.color = mBgColor
+        // 如果获取到的章节目录为空
+        if (mChapterList!!.isEmpty()) {
+            mStatus = STATUS_CATEGORY_EMPTY
+            mPageView.drawCurPage(false)
+            return
+        }
+        if (parseCurChapter()) {
+            // 如果章节从未打开
+            if (!isChapterOpen) {
+                var position: Int = mReadTable?.pagePos ?: 0
+
+                // 防止记录页的页号，大于当前最大页号
+                val size = mCurPageList?.size ?: 0
+                if (position >= size) {
+                    position = size - 1
+                }
+                mCurPage = getCurPage(position)
+                mCancelPage = mCurPage
+                // 切换状态
+                isChapterOpen = true
+            } else {
+                mCurPage = getCurPage(0)
+            }
+        } else {
+            mCurPage = TxtPage()
+        }
         mPageView.drawCurPage(false)
     }
 
-    private fun initPageView() {
-        //配置参数
-        mPageView.setPageMode(mPageMode)
-        mPageView.setBgColor(mBgColor)
-    }
-
     /**
-     * 初始化书籍
+     * 翻阅上一页
      */
-    private fun prepareBook() {
-        mReadTable = DataControls.getBookRecord(mBookEntity._id)
-        mCurChapterPos = mReadTable?.chapter ?: 0
-        mLastChapterPos = mCurChapterPos
-    }
-
-    fun prepareDisplay(width: Int, height: Int) {
-
-    }
-
-
     fun prev(): Boolean {
         // 以下情况禁止翻页
         if (!canTurnPage()) {
@@ -315,13 +142,111 @@ abstract class PageLoader(private val mPageView: PagerView, private val mBookEnt
         }
 
         mCancelPage = mCurPage
-        if (parsePrevChapter()) {
-            mCurPage = getPrevLastPage()
+        mCurPage = if (parsePrevChapter()) {
+            getPrevLastPage()
         } else {
-            mCurPage = TxtPage()
+            TxtPage()
         }
         mPageView.drawNextPage()
         return true
+    }
+
+    /**
+     * 判断是否有上一章节
+     */
+    private fun hasPrevChapter(): Boolean {
+        //判断是否上一章节为空
+        return mCurChapterPos - 1 >= 0
+    }
+
+    /**
+     * 解析上一章数据
+     *
+     * @return:数据是否解析成功
+     */
+    private fun parsePrevChapter(): Boolean {
+        // 加载上一章数据
+        val prevChapter = mCurChapterPos - 1
+        mLastChapterPos = mCurChapterPos
+        mCurChapterPos = prevChapter
+
+        // 当前章缓存为下一章
+        mNextPageList = mCurPageList
+
+        // 判断是否具有上一章缓存
+        if (mPrePageList != null) {
+            mCurPageList = mPrePageList
+            mPrePageList = null
+
+            // 回调
+            chapterChangeCallback()
+        } else {
+            dealLoadPageList(prevChapter)
+        }
+        return mCurPageList != null
+    }
+
+    /**
+     * 解析当前章节
+     */
+    fun parseCurChapter(): Boolean {
+        // 解析数据
+        dealLoadPageList(mCurChapterPos)
+        // 预加载下一页面
+        preLoadNextChapter()
+        return mCurPageList != null
+    }
+
+    private fun dealLoadPageList(chapterPos: Int) {
+        try {
+            mCurPageList = loadPageList(chapterPos)
+            if (mCurPageList != null) {
+                if (mCurPageList?.isEmpty() == true) {
+                    mStatus = STATUS_EMPTY
+
+                    // 添加一个空数据
+                    val page = TxtPage()
+                    page.lines = ArrayList(1)
+                    mCurPageList?.add(page)
+                } else {
+                    mStatus = STATUS_FINISH
+                }
+            } else {
+                mStatus = STATUS_LOADING
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            mCurPageList = null
+            mStatus = STATUS_ERROR
+        }
+
+        // 回调
+        chapterChangeCallback()
+    }
+
+    /**
+     * 加载页面列表
+     *
+     * @param chapterPos:章节序号
+     */
+    private fun loadPageList(chapterPos: Int): MutableList<TxtPage>? = try {
+        // 获取章节
+        val chapter = mChapterList?.get(chapterPos)
+        // 判断章节是否存在
+        if (hasChapterData(chapter)) {
+            // 获取章节的文本流
+            loadPages(chapter, getChapterReader(chapter))
+        } else {
+            null
+        }
+    } catch (e: Exception) {
+        null
+    }
+
+
+    private fun chapterChangeCallback() {
+        mPageChangeListener?.onChapterChange(mCurChapterPos)
+        mPageChangeListener?.onPageCountChange(mCurPageList?.size ?: 0)
     }
 
     /**
@@ -362,32 +287,98 @@ abstract class PageLoader(private val mPageView: PagerView, private val mBookEnt
         return true
     }
 
+    /**
+     * 解析下一章数据
+     *
+     * @return:返回解析成功还是失败
+     */
+    open fun parseNextChapter(): Boolean {
+        val nextChapter = mCurChapterPos + 1
+        mLastChapterPos = mCurChapterPos
+        mCurChapterPos = nextChapter
+
+        // 将当前章的页面列表，作为上一章缓存
+        mPrePageList = mCurPageList
+
+        // 是否下一章数据已经预加载了
+        if (mNextPageList != null) {
+            mCurPageList = mNextPageList
+            mNextPageList = null
+            // 回调
+            chapterChangeCallback()
+        } else {
+            // 处理页面解析
+            dealLoadPageList(nextChapter)
+        }
+        // 预加载下一页面
+        preLoadNextChapter()
+        return mCurPageList != null
+    }
+
+    /**
+     * 取消翻页
+     */
     fun pageCancel() {
-
+        if (mCurPage?.position == 0 && mCurChapterPos > mLastChapterPos) { // 加载到下一章取消了
+            if (mPrePageList != null) {
+                cancelNextChapter()
+            } else {
+                mCurPage = if (parsePrevChapter()) {
+                    getPrevLastPage()
+                } else {
+                    TxtPage()
+                }
+            }
+        } else if (mCurPageList == null || (mCurPage?.position == ((mCurPageList?.size ?: 0) - 1)
+                    && mCurChapterPos < mLastChapterPos)
+        ) {  // 加载上一章取消了
+            if (mNextPageList != null) {
+                cancelPreChapter()
+            } else {
+                mCurPage = if (parseNextChapter()) {
+                    mCurPageList!![0]
+                } else {
+                    TxtPage()
+                }
+            }
+        } else {
+            // 假设加载到下一页，又取消了。那么需要重新装载。
+            mCurPage = mCancelPage
+        }
     }
-
-    fun drawPage(bitmap: Bitmap?, isUpdate: Boolean) {
-
-    }
-
 
     /**
-     * 获取当前章节的章节位置
-     *
-     * @return
+     * 取消上一章
      */
-    open fun getChapterPos(): Int {
-        return mCurChapterPos
+    private fun cancelPreChapter() {
+        // 重置位置点
+        val temp = mLastChapterPos
+        mLastChapterPos = mCurChapterPos
+        mCurChapterPos = temp
+        // 重置页面列表
+        mPrePageList = mCurPageList
+        mCurPageList = mNextPageList
+        mNextPageList = null
+        chapterChangeCallback()
+        mCurPage = getCurPage(0)
+        mCancelPage = null
     }
 
     /**
-     * 获取距离屏幕的高度
-     *
-     * @return
+     * 取消下一章
      */
-    open fun getMarginHeight(): Int {
-        return mMarginHeight
+    private fun cancelNextChapter() {
+        val temp = mLastChapterPos
+        mLastChapterPos = mCurChapterPos
+        mCurChapterPos = temp
+        mNextPageList = mCurPageList
+        mCurPageList = mPrePageList
+        mPrePageList = null
+        chapterChangeCallback()
+        mCurPage = getPrevLastPage()
+        mCancelPage = null
     }
+
 
     /**
      * 根据当前状态，决定是否能够翻页
@@ -411,9 +402,13 @@ abstract class PageLoader(private val mPageView: PagerView, private val mBookEnt
      * @param br：章节的文本流
      * @return
      */
-    private fun loadPages(chapter :TxtChapter, br: BufferedReader): List<TxtPage> {
+    private fun loadPages(chapter: TxtChapter?, br: BufferedReader?): MutableList<TxtPage> {
         //生成的页面
         val pages = mutableListOf<TxtPage>()
+        if (chapter == null || br == null) {
+            // 数据错误直接返回空列表
+            return pages
+        }
         //使用流的方式加载
         val lines = mutableListOf<String>()
         var rHeight = mVisibleHeight
@@ -439,17 +434,17 @@ abstract class PageLoader(private val mPageView: PagerView, private val mBookEnt
                 var wordCount: Int
                 var subStr: String
                 paragraph?.run {
-                    while (length > 0) {
+                    while (isNotEmpty()) {
                         //当前空间，是否容得下一行文字
                         rHeight -= if (showTitle) {
-                            mTitlePaint?.textSize?.toInt() ?: 0
+                            getTitlePaintTextSize().toInt()
                         } else {
-                            mTextPaint?.textSize?.toInt() ?: 0
+                            getTextPaintTextSize().toInt()
                         }
                         // 一页已经填充满了，创建 TextPage
                         if (rHeight <= 0) {
                             // 创建Page
-                            val page: TxtPage = TxtPage()
+                            val page = TxtPage()
                             page.position = pages.size
                             page.title = StringUtils.convertCC(chapter.title)
                             page.lines = lines
@@ -465,15 +460,9 @@ abstract class PageLoader(private val mPageView: PagerView, private val mBookEnt
 
                         //测量一行占用的字节数
                         wordCount = if (showTitle) {
-                            mTitlePaint?.breakText(
-                                paragraph,
-                                true, mVisibleWidth.toFloat(), null
-                            ) ?: 0
+                            breakTextTitlePaint(paragraph)
                         } else {
-                            mTextPaint?.breakText(
-                                paragraph,
-                                true, mVisibleWidth.toFloat(), null
-                            ) ?: 0
+                            breakTextTextPaint(paragraph)
                         }
 
                         subStr = paragraph?.substring(0, wordCount) ?: ""
@@ -489,8 +478,8 @@ abstract class PageLoader(private val mPageView: PagerView, private val mBookEnt
                                 rHeight -= mTextInterval;
                             }
                         }
-                    //裁剪
-                    paragraph = paragraph?.substring(wordCount);
+                        //裁剪
+                        paragraph = paragraph?.substring(wordCount);
                     }
                 }
 
@@ -517,24 +506,15 @@ abstract class PageLoader(private val mPageView: PagerView, private val mBookEnt
                 //重置Lines
                 lines.clear()
             }
-        } catch (e : FileNotFoundException) {
+        } catch (e: FileNotFoundException) {
             e.printStackTrace()
-        } catch (e : IOException) {
+        } catch (e: IOException) {
             e.printStackTrace()
         } finally {
             F().close(br)
         }
         return pages;
     }
-
-    /**
-     * @return:获取初始显示的页面
-     */
-    private fun getCurPage(pos: Int): TxtPage? {
-        mPageChangeListener?.onPageChange(pos)
-        return mCurPageList?.get(pos)
-    }
-
 
     /**
      * @return:获取上一个页面
@@ -576,45 +556,131 @@ abstract class PageLoader(private val mPageView: PagerView, private val mBookEnt
         val nextChapter = mCurChapterPos + 1
 
         // 如果不存在下一章，且下一章没有数据，则不进行加载。
-        if (!hasNextChapter()
-            || !hasChapterData(mChapterList!![nextChapter])
+        if (!hasNextChapter() || !hasChapterData(mChapterList?.get(nextChapter))
         ) {
             return
         }
-
         //如果之前正在加载则取消
         coroutinesScope.cancel()
 
         coroutinesScope.launch {
-
+            //调用异步进行预加载加载
+            mNextPageList = loadPageList(nextChapter)
         }
 
-        //调用异步进行预加载加载
-//        Single.create(object : SingleOnSubscribe<List<TxtPage?>?>() {
-//            @Throws(Exception::class)
-//            fun subscribe(e: SingleEmitter<List<TxtPage?>?>) {
-//                e.onSuccess(loadPageList(nextChapter))
-//            }
-//        }).compose(RxUtils::toSimpleSingle)
-//            .subscribe(object : SingleObserver<List<TxtPage?>?>() {
-//                fun onSubscribe(d: Disposable) {
-//                    mPreLoadDisp = d
-//                }
-//
-//                fun onSuccess(pages: List<TxtPage?>) {
-//                    mNextPageList = pages
-//                }
-//
-//                fun onError(e: Throwable?) {
-//                    //无视错误
-//                }
-//            })
     }
 
+    /**
+     * 判断是否存在下一章
+     */
     private fun hasNextChapter(): Boolean {
         // 判断是否到达目录最后一章
         return mCurChapterPos + 1 < ((mChapterList?.size) ?: 0)
     }
+
+    /**
+     * 判断章节是否打开
+     */
+    open fun isChapterOpen() = isChapterOpen
+
+    /**
+     * 保存阅读记录
+     */
+    open fun saveRecord() {
+        if (mChapterList.isNullOrEmpty()) {
+            return
+        }
+        mReadTable?.bookId = mBookEntity._id
+        mReadTable?.chapter = mCurChapterPos
+        mReadTable?.pagePos = mCurPage?.position ?: 0
+
+        //存储到数据库
+        DataControls.saveBookRecord(mReadTable)
+    }
+
+
+    /**
+     * 设置文字相关参数（设置弹窗调用）
+     *
+     * @param textSize 显示字体大小
+     */
+    open fun setOrUpdateTextSize(textSize: Int) {
+        setTextSize(textSize)
+        // 如果当前已经显示数据
+        if (isChapterListPrepare && mStatus == STATUS_FINISH) {
+            // 重新计算当前页面
+            dealLoadPageList(mCurChapterPos)
+
+            // 防止在最后一页，通过修改字体，以至于页面数减少导致崩溃的问题
+
+            mCurPage?.run {
+                val pageListSize = mCurPageList?.size ?: 0
+                if (position >= pageListSize && pageListSize != 0) {
+                    position = pageListSize - 1
+                }
+                // 重新获取指定页面
+                mCurPage = mCurPageList?.get(position)
+            }
+
+        }
+        mPageView.drawCurPage(false)
+    }
+
+    /**
+     * 跳转到上一章
+     */
+    open fun skipPreChapter(): Boolean {
+        if (!hasPrevChapter()) {
+            return false
+        }
+        // 载入上一章。
+        mCurPage = if (parsePrevChapter()) {
+            getCurPage(0)
+        } else {
+            TxtPage()
+        }
+        mPageView.drawCurPage(false)
+        return true
+    }
+
+    /**
+     * 跳转到下一章
+     */
+    open fun skipNextChapter(): Boolean {
+        if (!hasNextChapter()) {
+            return false
+        }
+        //判断是否达到章节的终止点
+        mCurPage = if (parseNextChapter()) {
+            getCurPage(0)
+        } else {
+            TxtPage()
+        }
+        mPageView.drawCurPage(false)
+        return true
+    }
+
+    /****************************** public method */
+    /**
+     * 跳转到指定章节
+     *
+     * @param pos:从 0 开始。
+     */
+    open fun skipToChapter(pos: Int) {
+        // 设置参数
+        mCurChapterPos = pos
+
+        // 将上一章的缓存设置为null
+        mPrePageList = null
+        // 如果当前下一章缓存正在执行，则取消
+        coroutinesScope.cancel()
+        // 将下一章缓存设置为null
+        mNextPageList = null
+
+        // 打开指定章节
+        openChapter()
+    }
+
 
     /*******************************abstract method */
     /**

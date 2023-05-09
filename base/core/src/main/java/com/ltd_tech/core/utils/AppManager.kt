@@ -32,3 +32,6 @@ private fun getApplicationBySelf(): Application? = if (application == null) {
 } else {
     application
 }
+
+// 当期应用的包名
+val appPackageName =  application?.applicationContext?.packageName ?: "getAppPackageName exception"

@@ -1,18 +1,12 @@
 package com.ltd_tech.readsdk.utils
 
 import com.ltd_tech.readsdk.entities.ReadTable
-import com.ltd_tech.readsdk.repo.BookRepository
 import com.ltd_tech.readsdk.repo.StorageRepository
 
 /**
  * 书籍数据操作类
  */
 object DataControls {
-
-    /**
-     * 网络操作
-     */
-    private var mBookRepository: BookRepository = BookRepository()
 
     /**
      * 本地操作
@@ -26,6 +20,10 @@ object DataControls {
         return bookId?.run {
             StorageRepository().getBookRecord(bookId)
         } ?: ReadTable()
+    }
+
+    fun saveBookRecord(readTable : ReadTable?){
+
     }
 
 
