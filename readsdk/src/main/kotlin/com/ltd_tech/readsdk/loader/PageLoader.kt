@@ -2,8 +2,8 @@ package com.ltd_tech.readsdk.loader
 
 import com.ltd_tech.core.entities.TxtChapter
 import com.ltd_tech.core.entities.TxtPage
-import com.ltd_tech.core.utils.F
 import com.ltd_tech.core.utils.StringUtils
+import com.ltd_tech.core.utils.close
 import com.ltd_tech.core.widgets.pager.PagerView
 import com.ltd_tech.readsdk.entities.BookEntity
 import com.ltd_tech.readsdk.utils.DataControls
@@ -511,7 +511,7 @@ abstract class PageLoader(private val mPageView: PagerView, private val mBookEnt
         } catch (e: IOException) {
             e.printStackTrace()
         } finally {
-            F().close(br)
+            close(br)
         }
         return pages;
     }

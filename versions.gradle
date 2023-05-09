@@ -41,6 +41,7 @@ ext {
     dependsConfigs.rxlifecycle = "com.trello.rxlifecycle3:rxlifecycle-components:3.1.0"
     dependsConfigs.okio = "com.squareup.okio:okio:2.2.2"
     dependsConfigs.isoparser = "com.googlecode.mp4parser:isoparser:1.1.22"
+    dependsConfigs.lifecycle_process = "androidx.lifecycle:lifecycle-process:2.4.1"
 
 
     // UI 版本相关

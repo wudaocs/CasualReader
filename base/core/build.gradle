@@ -54,7 +54,7 @@ dependencies {
     implementation dependsConfigs.lifecycle_runtime_ktx
     implementation dependsConfigs.appcompat
     implementation dependsConfigs.material
-    implementation 'androidx.lifecycle:lifecycle-process:2.6.1'
+    implementation dependsConfigs.lifecycle_process
     testImplementation dependsTestConfigs.junit
     testImplementation dependsTestConfigs.junit_ext
     testImplementation dependsTestConfigs.espresso
