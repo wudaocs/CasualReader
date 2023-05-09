@@ -8,6 +8,8 @@ import java.io.Serializable;
 
 /**
  * BookRecordBean
+ * author: Kaos
+ * created on 2023/5/9
  */
 @Entity
 public class ReadTable implements Serializable {

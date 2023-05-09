@@ -39,6 +39,7 @@ public class BookChapterTableDao extends AbstractDao<BookChapterTable, String> {
 
     private Query<BookChapterTable> bookEntity_BookChapterListQuery;
     private Query<BookChapterTable> collectionTable_BookChapterListQuery;
+    private Query<BookChapterTable> downloadTaskTable_BookChapterListQuery;
 
     public BookChapterTableDao(DaoConfig config) {
         super(config);
@@ -218,6 +219,20 @@ public class BookChapterTableDao extends AbstractDao<BookChapterTable, String> {
         }
         Query<BookChapterTable> query = collectionTable_BookChapterListQuery.forCurrentThread();
         query.setParameter(0, bookId);
+        return query.list();
+    }
+
+    /** Internal query to resolve the "bookChapterList" to-many relationship of DownloadTaskTable. */
+    public List<BookChapterTable> _queryDownloadTaskTable_BookChapterList(String taskName) {
+        synchronized (this) {
+            if (downloadTaskTable_BookChapterListQuery == null) {
+                QueryBuilder<BookChapterTable> queryBuilder = queryBuilder();
+                queryBuilder.where(Properties.TaskName.eq(null));
+                downloadTaskTable_BookChapterListQuery = queryBuilder.build();
+            }
+        }
+        Query<BookChapterTable> query = downloadTaskTable_BookChapterListQuery.forCurrentThread();
+        query.setParameter(0, taskName);
         return query.list();
     }
 
