@@ -80,5 +80,5 @@ dependencies {
 
     implementation project(':base:core')
 
-//    implementation(name: 'lib-opencc-android', ext: 'aar')
+    implementation(name: 'lib-opencc-android', ext: 'aar')
 }

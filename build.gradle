@@ -16,8 +16,12 @@ plugins {
 
 apply(from: "versions.gradle")
 
-repositories {
-    flatDir {
-        dirs 'libs'   // aar目录
-    }
+task clean(type: Delete) {
+    delete rootProject.buildDir
 }
+
+//repositories {
+//    flatDir {
+//        dirs 'libs', project(':readsdk').file('libs') // aar目录
+//    }
+//}

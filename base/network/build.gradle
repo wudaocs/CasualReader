@@ -50,7 +50,6 @@ dependencies {
     implementation dependsKotlinConfigs.core_ktx
     implementation dependsConfigs.appcompat
     implementation dependsConfigs.material
-    implementation 'androidx.core:core-ktx:+'
     testImplementation dependsTestConfigs.junit
     testImplementation dependsTestConfigs.junit_ext
     testImplementation dependsTestConfigs.espresso

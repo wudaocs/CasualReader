@@ -6,6 +6,12 @@ plugins {
     id 'org.greenrobot.greendao'
 }
 
+//repositories {
+//    flatDir {
+//        dirs 'libs', project(':readsdk').file('libs') // aar目录
+//    }
+//}
+
 android {
     namespace 'com.ltd_tech.casualreader'
     compileSdk Versions.compileSdk
@@ -47,17 +53,11 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-
-//    repositories {
-//        flatDir {
-//            dirs 'libs'
-//            dirs '../readsdk/libs'
-//        }
-//    }
 }
 
+
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar','*.aar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation dependsKotlinConfigs.kotlin_stdlib
     implementation dependsUIConfigs.constraintlayout
     implementation dependsKotlinConfigs.core_ktx
@@ -76,6 +76,7 @@ dependencies {
 
     implementation dependsThirdsConfigs.ARouter_api
     kapt dependsThirdsConfigs.ARouter_compiler
+
 
     implementation project(':base:core')
     implementation project(':readsdk')
