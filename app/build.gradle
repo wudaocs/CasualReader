@@ -57,7 +57,7 @@ android {
 }
 
 dependencies {
-
+    implementation fileTree(dir: 'libs', include: ['*.jar','*.aar'])
     implementation dependsKotlinConfigs.kotlin_stdlib
     implementation dependsUIConfigs.constraintlayout
     implementation dependsKotlinConfigs.core_ktx
@@ -72,7 +72,7 @@ dependencies {
     implementation dependsKotlinConfigs.kotlinx_coroutines_android
     implementation dependsConfigs.lifecycle_runtime_ktx
 
-//    api dependsThirdsConfigs.mmkv
+    api dependsThirdsConfigs.mmkv
 
     implementation dependsThirdsConfigs.ARouter_api
     kapt dependsThirdsConfigs.ARouter_compiler
@@ -81,9 +81,9 @@ dependencies {
     implementation project(':readsdk')
 }
 
-//configurations.all() {
-//    Configuration configuration ->
-//        configuration.resolutionStrategy.force(dependsKotlinConfigs.kotlin_stdlib)
-//        configuration.resolutionStrategy.force(dependsConfigs.androidx_arch)
-//        configuration.resolutionStrategy.force(dependsUIConfigs.constraintlayout)
-//}
+configurations.all() {
+    Configuration configuration ->
+        configuration.resolutionStrategy.force(dependsKotlinConfigs.kotlin_stdlib)
+        configuration.resolutionStrategy.force(dependsConfigs.androidx_arch)
+        configuration.resolutionStrategy.force(dependsUIConfigs.constraintlayout)
+}

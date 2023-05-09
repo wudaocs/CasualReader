@@ -1,9 +1,9 @@
 package com.ltd_tech.casualreader
 
-import androidx.multidex.MultiDexApplication
 import com.alibaba.android.arouter.launcher.ARouter
+import com.ltd_tech.core.MApplication
 
-class CRApplication : MultiDexApplication() {
+class CRApplication : MApplication() {
 
     override fun onCreate() {
         super.onCreate()

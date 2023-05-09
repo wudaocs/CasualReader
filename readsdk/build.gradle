@@ -61,6 +61,7 @@ greendao {
 }
 
 dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar','*.aar'])
     implementation dependsKotlinConfigs.core_ktx
     implementation dependsConfigs.appcompat
     implementation dependsConfigs.material

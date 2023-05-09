@@ -133,7 +133,8 @@ ext {
     // Google Mobile Services -> com.google.firebase:firebase-appindexing:10.0.1
     dependsThirdsConfigs.gmsAppindexing = "com.google.android.gms:play-services-appindexing:8.1.0"
     dependsThirdsConfigs.greenDao = "org.greenrobot:greendao:3.3.0"
-    dependsThirdsConfigs.mmkv = "com.tencent:mmkv-static:1.1.2"
+    dependsThirdsConfigs.mmkv = "com.tencent:mmkv:1.2.16"
+    dependsThirdsConfigs.logger = "com.orhanobut:logger:2.2.0"
 
 }
 
