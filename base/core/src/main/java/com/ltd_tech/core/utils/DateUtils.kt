@@ -18,6 +18,8 @@ object DateUtils {
     /** 时间日期格式化到年月日时分秒.  */
     private const val DATE_FORMAT_YMDHMS = "yyyy-MM-dd HH:mm:ss"
 
+    private const val FORMAT_BOOK_DATE = "yyyy-MM-dd'T'HH:mm:ss"
+
     @SuppressLint("SimpleDateFormat")
     fun getSimpleDateFormat(format: String): SimpleDateFormat {
         val simpleDateFormat = SimpleDateFormat(format)
@@ -47,4 +49,10 @@ object DateUtils {
             System.currentTimeMillis()
         }
     }
+
+    /**
+     * 获取当前书籍最后阅读时间
+     */
+    fun getCurrentTimeToBook() =
+        dateConvert(System.currentTimeMillis(), FORMAT_BOOK_DATE)
 }

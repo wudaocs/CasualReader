@@ -12,6 +12,7 @@ import com.ltd_tech.core.utils.deleteFileByPath
 import com.ltd_tech.core.utils.getFile
 import com.ltd_tech.core.utils.saveToFile
 import com.ltd_tech.readsdk.entities.BookChapterTable
+import com.ltd_tech.readsdk.entities.BookEntity
 import com.ltd_tech.readsdk.entities.ChapterInfoEntity
 import com.ltd_tech.readsdk.entities.CollectionTable
 import com.ltd_tech.readsdk.entities.ReadTable
@@ -23,6 +24,7 @@ import com.ltd_tech.readsdk.entities.dao.DownloadTaskTableDao
 import com.ltd_tech.readsdk.entities.dao.ReadTableDao
 import org.greenrobot.greendao.database.Database
 import java.io.BufferedReader
+import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileReader
 import java.io.IOException
@@ -81,7 +83,7 @@ internal class StorageRepository {
                 ?.where(BookChapterTableDao.Properties.BookId.eq(bookId))?.list()
         )
     }
-
+    
     /**
      * 获取章节信息 TODO:需要进行获取编码并转换的问题
      */
@@ -239,6 +241,27 @@ internal class StorageRepository {
      */
     fun deleteCache() {
         deleteFileByPath(cacheDir)
+    }
+
+
+    /** ---------↓↓↓---------  书籍相关  ---------↓↓↓--------- **/
+    /**
+     * 保存书籍信息
+     */
+    fun saveBookWithAsync(bookEntity: BookEntity?){
+        daoMaster.mSession?.run {
+            startAsyncSession().runInTx{
+                bookEntity?.run {
+
+                    // 如果章节不为空 先存储章节信息
+                    if (bookChapterList.isNotEmpty()){
+                        bookChapterTableDao.insertOrReplaceInTx(bookChapterList)
+                    }
+                    // 章节存储完成 在存书籍信息
+                    bookEntityDao.insertOrReplace(bookEntity)
+                }
+            }
+        }
     }
 
 

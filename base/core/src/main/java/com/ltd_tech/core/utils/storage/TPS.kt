@@ -1,9 +1,13 @@
-package com.ltd_tech.core.utils
+package com.ltd_tech.core.utils.storage
 
 import android.content.Context
 import android.content.SharedPreferences
 import com.ltd_tech.core.exts.nullTo
 import com.ltd_tech.core.exts.todo
+import com.ltd_tech.core.utils.L
+import com.ltd_tech.core.utils.application
+import com.ltd_tech.core.utils.copyFileUsingFileStreams
+import com.ltd_tech.core.utils.mmkvSharedDir
 import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -499,8 +503,8 @@ object TPS {
                 destCrcFile.delete()
             }
             // 获取公共文件
-            val file = File("${mmkvSharedDir}/$SPACE")
-            val fileCrc = File("${mmkvSharedDir}/$SPACE.crc")
+            val file = File("$mmkvSharedDir/$SPACE")
+            val fileCrc = File("$mmkvSharedDir/$SPACE.crc")
             val dir = File(selfDir)
             if (!dir.exists()) {
                 dir.mkdirs()

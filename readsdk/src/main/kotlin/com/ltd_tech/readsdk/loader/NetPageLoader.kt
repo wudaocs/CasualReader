@@ -5,7 +5,7 @@ import com.ltd_tech.core.widgets.pager.PagerView
 import com.ltd_tech.readsdk.entities.BookEntity
 import java.io.BufferedReader
 
-class NetPageLoader(pagerView: PagerView, bookEntity: BookEntity): PageLoader(pagerView,bookEntity) {
+class NetPageLoader(pagerView: PagerView, bookEntity: BookEntity): BookLoader(pagerView,bookEntity) {
     override fun refreshChapterList() {
     }
 

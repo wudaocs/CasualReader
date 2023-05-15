@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <androidx.drawerlayout.widget.DrawerLayout
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/dl_activity_read_detail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_read_detail">
+
+            <!--阅读书籍页面-->
+            <com.ltd_tech.core.widgets.pager.PagerView
+                android:id="@+id/pv_activity_read_detail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="true"
+                tools:visibility="gone" />
+            
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/abl_activity_read_detail_menu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/bg_read_detail_menu"
+                android:visibility="gone"
+                tools:visibility="visible"
+                >
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_50"
+                    android:minHeight="?attr/actionBarSize"
+                    android:theme="@style/Theme_ToolBar_Menu"
+                    >
+
+
+                </androidx.appcompat.widget.Toolbar>
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <!--底部页面-->
+            <LinearLayout
+                android:id="@+id/ll_activity_read_detail_bottom_menu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="@color/bg_read_detail_menu"
+                android:clickable="true"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:focusable="true">
+
+                <!--页面进度栏-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_activity_read_detail_pre_chapter"
+                        style="@style/Theme_TextAppearance_Read_BottomMenu"
+                        android:layout_width="80dp"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="上一章" />
+
+                    <SeekBar
+                        android:id="@+id/sb_activity_read_detail_chapter_progress"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:max="100"
+                        android:maxHeight="3dp"
+                        android:minHeight="3dp"
+                        android:progressDrawable="@drawable/seekbar_bg"
+                        android:thumb="@drawable/seekbar_thumb"
+                        android:thumbOffset="10dp" />
+
+                    <TextView
+                        android:id="@+id/tv_activity_read_detail_next_chapter"
+                        style="@style/Theme_TextAppearance_Read_BottomMenu"
+                        android:layout_width="80dp"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="下一章" />
+                </LinearLayout>
+
+                <!--菜单栏-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="72dp"
+                    android:orientation="horizontal"
+                    android:paddingBottom="12dp"
+                    android:paddingTop="12dp">
+
+                    <TextView
+                        android:id="@+id/tv_activity_read_detail_category"
+                        style="@style/Theme_TextAppearance_Read_BottomMenu"
+                        android:drawableTop="@drawable/ic_read_menu_category"
+                        android:text="@string/nb.read.category" />
+
+                    <TextView
+                        android:id="@+id/tv_activity_read_detail_night_mode"
+                        style="@style/Theme_TextAppearance_Read_BottomMenu"
+                        android:drawableTop="@drawable/ic_read_menu_night"
+                        android:text="@string/nb.mode.night" />
+
+                    <TextView
+                        android:id="@+id/tv_activity_read_detail_setting"
+                        style="@style/Theme_TextAppearance_Read_BottomMenu"
+                        android:drawableTop="@drawable/ic_read_menu_font"
+                        android:text="@string/nb.read.setting" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <!--侧滑栏-->
+        <LinearLayout
+            android:layout_width="300dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:background="@drawable/bg_read_detail"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_16">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginBottom="8dp"
+                android:text=""
+                android:textColor="@color/text_default"
+                android:textSize="20sp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_activity_read_detail_category"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scrollbars="vertical" />
+            </RelativeLayout>
+        </LinearLayout>
+
+    </androidx.drawerlayout.widget.DrawerLayout>
+</layout>

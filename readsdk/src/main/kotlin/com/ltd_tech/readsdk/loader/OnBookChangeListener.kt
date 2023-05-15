@@ -2,7 +2,7 @@ package com.ltd_tech.readsdk.loader
 
 import com.ltd_tech.core.entities.TxtChapter
 
-interface OnPageChangeListener {
+interface OnBookChangeListener {
     /**
      * 作用：章节切换的时候进行回调
      *
@@ -15,7 +15,7 @@ interface OnPageChangeListener {
      *
      * @param requestChapters:需要下载的章节列表
      */
-    fun requestChapters(requestChapters: List<TxtChapter>)
+    fun requestChapters(requestChapters: MutableList<TxtChapter>)
 
     /**
      * 作用：章节目录加载完成时候回调

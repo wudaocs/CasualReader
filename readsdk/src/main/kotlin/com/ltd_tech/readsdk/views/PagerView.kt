@@ -16,7 +16,8 @@ import com.ltd_tech.core.widgets.pager.anim.PagerTurnPageAnim
 import com.ltd_tech.readsdk.entities.BookEntity
 import com.ltd_tech.readsdk.loader.LocalPageLoader
 import com.ltd_tech.readsdk.loader.NetPageLoader
-import com.ltd_tech.readsdk.loader.PageLoader
+import com.ltd_tech.readsdk.loader.BookLoader
+import java.lang.IllegalArgumentException
 import kotlin.math.abs
 
 /**
@@ -56,7 +57,7 @@ class PagerView @JvmOverloads constructor(
     private var mTouchListener: TouchListener? = null
 
     //内容加载器
-    private var mPageLoader: PageLoader? = null
+    private var mPageLoader: BookLoader? = null
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
@@ -160,10 +161,13 @@ class PagerView @JvmOverloads constructor(
     /**
      * 获取 PageLoader
      */
-    fun getPageLoader(bookEntity: BookEntity): PageLoader? {
+    fun getPageLoader(bookEntity: BookEntity?): BookLoader? {
         // 判是否已经存在
         if (mPageLoader != null) {
             return mPageLoader
+        }
+        if (bookEntity == null){
+            throw IllegalArgumentException("getPageLoader -> bookEntity is null")
         }
         // 根据书籍类型，获取具体的加载器
         mPageLoader = if (bookEntity.isLocal()) {

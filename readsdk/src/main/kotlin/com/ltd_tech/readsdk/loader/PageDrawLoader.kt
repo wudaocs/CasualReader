@@ -80,7 +80,7 @@ open class PageDrawLoader(private val mPageView: PagerView, private val mBookEnt
     protected var isChapterListPrepare = false
 
     // 监听器
-    protected var mPageChangeListener: OnPageChangeListener? = null
+    protected var mPageChangeListener: OnBookChangeListener? = null
 
 
     /** ---------------------  绘制部分  --------------------------- */
@@ -484,7 +484,7 @@ open class PageDrawLoader(private val mPageView: PagerView, private val mBookEnt
             val paragraphInterval = mTextPara + (mTextPaint?.textSize?.toInt() ?: 0)
             val titleInterval = mTitleInterval + (mTitlePaint?.textSize ?: 0f)
             val titleParagraphInterval = mTitlePara + (mTitlePaint?.textSize ?: 0f)
-            var str: String = ""
+            var str: String
             mCurPage?.run {
                 //对标题进行绘制
                 for (i in 0..titleLines) {

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+	
+	<data>
+		<variable
+			name="ItemCategoryTxtChapter"
+			type="com.ltd_tech.core.entities.TxtChapter" />
+	</data>
+
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		xmlns:tools="http://schemas.android.com/tools"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="@drawable/selector_bg_category"
+		android:orientation="vertical">
+
+		<TextView
+			android:id="@+id/category_tv_chapter"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:drawableLeft="@drawable/selector_category_unload"
+			android:drawablePadding="10dp"
+			android:padding="15dp"
+			android:text="@{ItemCategoryTxtChapter.title}"
+			tools:text="1.第一章 八十大寿"
+			android:textColor="@drawable/selector_chapter"
+			android:textSize="16sp" />
+
+
+		<View
+			android:layout_width="match_parent"
+			android:layout_height="1dp"
+			android:background="@color/divider_narrow_default" />
+	</LinearLayout>
+</layout>

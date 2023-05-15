@@ -5,6 +5,7 @@ import com.ltd_tech.core.entities.TxtPage
 import com.ltd_tech.core.utils.StringUtils
 import com.ltd_tech.core.utils.close
 import com.ltd_tech.core.widgets.pager.PagerView
+import com.ltd_tech.readsdk.entities.BookChapterTable
 import com.ltd_tech.readsdk.entities.BookEntity
 import com.ltd_tech.readsdk.utils.DataControls
 import kotlinx.coroutines.*
@@ -15,7 +16,7 @@ import java.io.IOException
 /**
  * 内容加载器
  */
-abstract class PageLoader(private val mPageView: PagerView, private val mBookEntity: BookEntity) :
+abstract class BookLoader(private val mPageView: PagerView, private val mBookEntity: BookEntity) :
     PageDrawLoader(mPageView, mBookEntity) {
 
     // 被遮盖的页，或者认为被取消显示的页
@@ -25,7 +26,7 @@ abstract class PageLoader(private val mPageView: PagerView, private val mBookEnt
      * 设置页面切换监听
      * @param listener
      */
-    fun setOnPageChangeListener(listener: OnPageChangeListener) {
+    fun setOnPageChangeListener(listener: OnBookChangeListener) {
         mPageChangeListener = listener
 
         // 如果目录加载完之后才设置监听器，那么会默认回调
@@ -394,7 +395,6 @@ abstract class PageLoader(private val mPageView: PagerView, private val mBookEnt
         return true
     }
 
-    /**************************************private method********************************************/
     /**
      * 将章节数据，解析成页面列表
      *
@@ -660,7 +660,6 @@ abstract class PageLoader(private val mPageView: PagerView, private val mBookEnt
         return true
     }
 
-    /****************************** public method */
     /**
      * 跳转到指定章节
      *
@@ -679,6 +678,14 @@ abstract class PageLoader(private val mPageView: PagerView, private val mBookEnt
 
         // 打开指定章节
         openChapter()
+    }
+
+    /**
+     * 刷新书籍章节信息
+     */
+    fun refreshBookChapters(bookChapters : MutableList<BookChapterTable>){
+        mBookEntity.bookChapters = bookChapters
+        refreshChapterList()
     }
 
 

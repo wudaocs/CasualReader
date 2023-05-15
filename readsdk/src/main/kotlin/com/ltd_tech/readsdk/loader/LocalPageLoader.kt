@@ -6,7 +6,7 @@ import com.ltd_tech.readsdk.entities.BookEntity
 import java.io.BufferedReader
 
 
-class LocalPageLoader(pagerView: PagerView, bookEntity: BookEntity) : PageLoader(pagerView, bookEntity){
+class LocalPageLoader(pagerView: PagerView, bookEntity: BookEntity) : BookLoader(pagerView, bookEntity){
     override fun refreshChapterList() {
     }
 

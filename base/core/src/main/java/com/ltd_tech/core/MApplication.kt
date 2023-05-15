@@ -3,7 +3,7 @@ package com.ltd_tech.core
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.multidex.MultiDexApplication
 import com.ltd_tech.core.observe.MApplicationObserver
-import com.ltd_tech.core.utils.TPS
+import com.ltd_tech.core.utils.storage.TPS
 
 /**
  * 基类

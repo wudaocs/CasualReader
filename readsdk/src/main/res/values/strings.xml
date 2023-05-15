@@ -208,5 +208,7 @@
     <string name="read_book_tip_parse_error">文件解析错误</string>
     <string name="read_book_tip_category_empty">目录列表为空</string>
 
+    <string name="read_detail_category">目录</string>
+
 
 </resources>

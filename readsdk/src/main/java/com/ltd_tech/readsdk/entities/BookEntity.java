@@ -4,6 +4,7 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.ToMany;
 
+import java.io.Serializable;
 import java.util.List;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
@@ -15,7 +16,9 @@ import com.ltd_tech.readsdk.entities.dao.BookEntityDao;
  * CollBookBean
  */
 @Entity
-public class BookEntity {
+public class BookEntity implements Serializable {
+
+    public static final long serialVersionUID = 536871008;
 
     /**
      * _id : 53663ae356bdc93e49004474
@@ -217,6 +220,26 @@ public class BookEntity {
 
     public void setIsLocal(boolean isLocal) {
         this.isLocal = isLocal;
+    }
+
+    /**
+     *  设置章节数据
+     * @param bookChapters
+     */
+    public void setBookChapters(List<BookChapterTable> bookChapters){
+        bookChapterList = bookChapters;
+        for (BookChapterTable bean : bookChapters){
+            bean.setBookId(get_id());
+        }
+    }
+
+    public List<BookChapterTable> getBookChapters(){
+        if (daoSession == null){
+            return bookChapterList;
+        }
+        else {
+            return getBookChapterList();
+        }
     }
 
     /**

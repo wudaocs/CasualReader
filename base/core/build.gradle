@@ -44,18 +44,26 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+    dataBinding {
+        enabled = true
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar','*.aar'])
-    implementation dependsConfigs.multidex
-    implementation dependsKotlinConfigs.core_ktx
-    implementation dependsKotlinConfigs.kotlinx_coroutines_core
-    implementation dependsKotlinConfigs.kotlinx_coroutines_android
-    implementation dependsConfigs.lifecycle_runtime_ktx
-    implementation dependsConfigs.appcompat
-    implementation dependsConfigs.material
-    implementation dependsConfigs.lifecycle_process
+    api dependsConfigs.multidex
+    api dependsKotlinConfigs.core_ktx
+    api dependsKotlinConfigs.kotlinx_coroutines_core
+    api dependsKotlinConfigs.kotlinx_coroutines_android
+    api dependsConfigs.lifecycle_runtime_ktx
+    api dependsConfigs.appcompat
+    api dependsConfigs.material
+    api dependsConfigs.lifecycle_process
+    api dependsConfigs.gson
+    api dependsKotlinConfigs.activity_ktx
+    api dependsKotlinConfigs.kotlin_reflect
+
     testImplementation dependsTestConfigs.junit
     testImplementation dependsTestConfigs.junit_ext
     testImplementation dependsTestConfigs.espresso
@@ -63,6 +71,7 @@ dependencies {
     api dependsThirdsConfigs.mmkv
     implementation dependsThirdsConfigs.logger
 
-    implementation dependsThirdsConfigs.ARouter_api
+    api dependsThirdsConfigs.ARouter_api
     kapt dependsThirdsConfigs.ARouter_compiler
+
 }

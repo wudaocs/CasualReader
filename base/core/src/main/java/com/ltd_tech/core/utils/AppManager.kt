@@ -1,11 +1,13 @@
 package com.ltd_tech.core.utils
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Application
 import android.content.pm.PackageManager
 import android.os.Bundle
 import java.lang.ref.WeakReference
 import java.lang.reflect.InvocationTargetException
+import java.util.LinkedList
 
 var application: Application? = getApplicationBySelf()
 
@@ -75,4 +77,42 @@ private fun getMeta(): Bundle? {
     } else {
         weakReference?.get()
     }
+}
+
+val activityList = LinkedList<Activity>()
+
+/**
+ * 获取当前显示activity页面
+ */
+fun getCurrentActivity(): Activity? = activityList.last
+
+
+fun registerLifeCallBack() {
+    application?.registerActivityLifecycleCallbacks(object :
+        Application.ActivityLifecycleCallbacks {
+        
+        override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+        }
+        
+        override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+            activityList.add(activity)
+        }
+
+        override fun onActivityStarted(activity: Activity) {
+        }
+
+        override fun onActivityResumed(activity: Activity) {
+        }
+
+        override fun onActivityPaused(activity: Activity) {
+        }
+
+        override fun onActivityStopped(activity: Activity) {
+            activityList.remove(activity)
+        }
+
+        override fun onActivityDestroyed(activity: Activity) {
+        }
+
+    })
 }

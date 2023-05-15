@@ -5,6 +5,8 @@ import android.text.TextUtils
 import androidx.annotation.ColorRes
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.databinding.ViewDataBinding
+import com.ltd_tech.core.BaseViewModel
 import com.ltd_tech.core.MBaseActivity
 
 /**
@@ -18,7 +20,7 @@ import com.ltd_tech.core.MBaseActivity
  * WindowInsetsCompat.Type.displayCutout()
  * WindowInsetsCompat.Type.systemBars()
  */
-fun MBaseActivity.setControllerFlag(
+fun <T : ViewDataBinding, V : BaseViewModel> MBaseActivity<T,V>.setControllerFlag(
     flag: Int,
     show: Boolean = true,
     reverseColor: Boolean = false
@@ -67,7 +69,7 @@ fun MBaseActivity.setControllerFlag(
 /**
  * 设置状态栏颜色
  */
-fun MBaseActivity.setStatusBarColor(@ColorRes colorRes: Int = -1, colorResName: String = "") {
+fun <T : ViewDataBinding, V : BaseViewModel> MBaseActivity<T,V>.setStatusBarColor(@ColorRes colorRes: Int = -1, colorResName: String = "") {
     window.statusBarColor = if (colorRes != -1) {
         resources.getColor(colorRes)
     } else {
