@@ -24,4 +24,16 @@ object ReadSettingManager {
     fun isVolumeTurnPage() = SdkKV.isVolumeTurnPage()
 
     fun isNightMode() = SdkKV.isNightMode()
+
+    fun setTextSize(textSize: Int) = SdkKV.setTextSize(textSize)
+
+    fun getTextSize() = SdkKV.getTextSize()
+
+    fun isDefaultTextSize() = SdkKV.isDefaultTextSize()
+
+    fun getPageMode() = SdkKV.getPageMode()
+
+    fun getPageStyle() = SdkKV.getPageStyle()
+
+    fun setBrightness(progress : Int) = SdkKV.setBrightness(progress)
 }

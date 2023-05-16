@@ -122,7 +122,9 @@ class ReadDetailActivity : MBaseActivity<ActivityReadDetailBinding, ReadDetailVi
 
         mPageLoader = bind.pvActivityReadDetail.getPageLoader(mBookEntity)
 
-        mSettingDialog = ReadSettingDialog(this, mPageLoader)
+        mSettingDialog = ReadSettingDialog(this, mPageLoader){
+
+        }
 
         bind.dlActivityReadDetail.run {
             //禁止滑动展示DrawerLayout

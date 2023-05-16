@@ -264,6 +264,14 @@ internal class StorageRepository {
         }
     }
 
+    fun saveBookEntity(bookEntity: BookEntity?){
+        bookEntity?.run {
+            daoMaster.mSession?.run {
+                bookEntityDao.insertOrReplace(bookEntity)
+            }
+        }
+    }
+
 
 }
 

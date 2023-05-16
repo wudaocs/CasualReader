@@ -45,6 +45,7 @@ object TPS {
 //        MMKV.initialize(selfDir)
         //一些 Android 设备（API level 19）在安装/更新 APK 时可能出错, 导致 libmmkv.so 找不到。然后就会遇到 java.lang.UnsatisfiedLinkError 之类的 crash
         MMKV.initialize(application, selfDir)
+        isInit = true
     }
 
     /**

@@ -1,9 +1,10 @@
 package com.ltd_tech.readsdk.utils
 
-import android.os.FileUtils
 import com.ltd_tech.core.FILE_SUFFIX_CR
 import com.ltd_tech.core.cacheBookDir
+import com.ltd_tech.core.utils.DateUtils
 import com.ltd_tech.core.utils.L
+import com.ltd_tech.core.utils.MD5
 import com.ltd_tech.readsdk.entities.BookChapterTable
 import com.ltd_tech.readsdk.entities.BookEntity
 import com.ltd_tech.readsdk.entities.ReadTable
@@ -45,6 +46,10 @@ object DataControls {
         mStorageRepository.saveBookWithAsync(bookEntity)
     }
 
+    fun saveBookEntity(bookEntity: BookEntity?){
+        mStorageRepository.saveBookEntity(bookEntity)
+    }
+
     /**
      * 获取书籍章节信息
      */
@@ -76,6 +81,39 @@ object DataControls {
             return false
         }
         return File("$cacheBookDir$bookId/$chapterName$FILE_SUFFIX_CR").exists()
+    }
+
+    /**
+     * 根据本地文件地址保存数据
+     */
+    fun saveLocal(path : String) : BookEntity{
+        val bookEntity = convertBookEntity(mutableListOf(File(path)))
+        return bookEntity[0]
+    }
+
+    /**
+     * 转换本地路径为数据库对象
+     */
+    private fun convertBookEntity(files: List<File>): List<BookEntity> {
+        val bookEntities: MutableList<BookEntity> = ArrayList(files.size)
+        for (file in files) {
+            //判断文件是否存在
+            if (!file.exists()) continue
+            val bookEntity = BookEntity()
+            bookEntity._id = MD5.strToMd5By16(file.absolutePath)
+            bookEntity.title = file.name.replace(".txt", "")
+            bookEntity.author = ""
+            bookEntity.shortIntro = "无"
+            bookEntity.cover = file.absolutePath
+            bookEntity.setLocal(true)
+            bookEntity.lastChapter = "开始阅读"
+            bookEntity.updated = DateUtils.dateConvertByBookDateFormat(
+                file.lastModified()
+            )
+            bookEntity.lastRead = DateUtils.getCurrentTimeToBook()
+            bookEntities.add(bookEntity)
+        }
+        return bookEntities
     }
 
 

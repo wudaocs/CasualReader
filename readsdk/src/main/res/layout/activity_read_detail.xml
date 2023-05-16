@@ -102,19 +102,19 @@
 
                     <TextView
                         android:id="@+id/tv_activity_read_detail_category"
-                        style="@style/Theme_TextAppearance_Read_BottomMenu"
+                        style="@style/Theme_TextAppearance_Read_BottomMenu_Button"
                         android:drawableTop="@drawable/ic_read_menu_category"
                         android:text="@string/nb.read.category" />
 
                     <TextView
                         android:id="@+id/tv_activity_read_detail_night_mode"
-                        style="@style/Theme_TextAppearance_Read_BottomMenu"
+                        style="@style/Theme_TextAppearance_Read_BottomMenu_Button"
                         android:drawableTop="@drawable/ic_read_menu_night"
                         android:text="@string/nb.mode.night" />
 
                     <TextView
                         android:id="@+id/tv_activity_read_detail_setting"
-                        style="@style/Theme_TextAppearance_Read_BottomMenu"
+                        style="@style/Theme_TextAppearance_Read_BottomMenu_Button"
                         android:drawableTop="@drawable/ic_read_menu_font"
                         android:text="@string/nb.read.setting" />
                 </LinearLayout>

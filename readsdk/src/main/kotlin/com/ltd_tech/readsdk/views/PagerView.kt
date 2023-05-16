@@ -9,15 +9,15 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
+import com.ltd_tech.core.widgets.pager.anim.PagerCoverAnim
 import com.ltd_tech.core.widgets.pager.anim.PagerHorizonAnim
 import com.ltd_tech.core.widgets.pager.anim.PagerNoneAnim
 import com.ltd_tech.core.widgets.pager.anim.PagerScrollAnim
 import com.ltd_tech.core.widgets.pager.anim.PagerTurnPageAnim
 import com.ltd_tech.readsdk.entities.BookEntity
+import com.ltd_tech.readsdk.loader.BookLoader
 import com.ltd_tech.readsdk.loader.LocalPageLoader
 import com.ltd_tech.readsdk.loader.NetPageLoader
-import com.ltd_tech.readsdk.loader.BookLoader
-import java.lang.IllegalArgumentException
 import kotlin.math.abs
 
 /**
@@ -166,7 +166,7 @@ class PagerView @JvmOverloads constructor(
         if (mPageLoader != null) {
             return mPageLoader
         }
-        if (bookEntity == null){
+        if (bookEntity == null) {
             throw IllegalArgumentException("getPageLoader -> bookEntity is null")
         }
         // 根据书籍类型，获取具体的加载器
@@ -238,6 +238,7 @@ class PagerView @JvmOverloads constructor(
                     canTouch = mTouchListener?.onTouch() ?: false
                     mPageAnim?.onTouchEvent(event)
                 }
+
                 MotionEvent.ACTION_MOVE -> {
                     // 判断是否大于最小滑动值。
                     val slop = ViewConfiguration.get(context).scaledTouchSlop
@@ -251,6 +252,7 @@ class PagerView @JvmOverloads constructor(
                         Log.v("onTouchEvent", "pagerView onTouchEvent 非滑动日志")
                     }
                 }
+
                 MotionEvent.ACTION_UP -> {
                     if (!isMove) {
                         //设置中间区域范围
@@ -269,6 +271,7 @@ class PagerView @JvmOverloads constructor(
                     }
                     mPageAnim?.onTouchEvent(event)
                 }
+
                 else -> {}
             }
         }
@@ -288,6 +291,7 @@ class PagerView @JvmOverloads constructor(
                     mViewWidth, mViewHeight, 0,
                     mPageLoader?.getMarginHeight() ?: 0, this, this
                 )
+                PageMode.COVER -> PagerCoverAnim(mViewWidth, mViewHeight, this, this)
             }
         }
     }
@@ -301,7 +305,7 @@ class PagerView @JvmOverloads constructor(
     }
 
     fun getBgBitmap(): Bitmap? {
-        return  mPageAnim?.getBgBitmap()
+        return mPageAnim?.getBgBitmap()
     }
 
 }

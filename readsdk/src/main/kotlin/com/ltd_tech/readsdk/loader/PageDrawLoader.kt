@@ -229,7 +229,7 @@ open class PageDrawLoader(private val mPageView: PagerView, private val mBookEnt
     /**
      * 设置页面样式
      */
-    private fun setPageStyle(pageStyle: PageStyle?) {
+    open fun setPageStyle(pageStyle: PageStyle?) {
         if (pageStyle != PageStyle.NIGHT) {
             mPageStyle = pageStyle
             ReadConfigManager.setPageStyle(pageStyle)

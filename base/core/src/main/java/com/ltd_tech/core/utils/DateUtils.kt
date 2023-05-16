@@ -55,4 +55,6 @@ object DateUtils {
      */
     fun getCurrentTimeToBook() =
         dateConvert(System.currentTimeMillis(), FORMAT_BOOK_DATE)
+
+    fun dateConvertByBookDateFormat(time: Long): String = dateConvert(time, FORMAT_BOOK_DATE) ?: ""
 }
