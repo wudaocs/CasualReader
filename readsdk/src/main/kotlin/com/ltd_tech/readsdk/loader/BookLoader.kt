@@ -1,10 +1,12 @@
 package com.ltd_tech.readsdk.loader
 
+import android.text.TextUtils
 import com.ltd_tech.core.entities.TxtChapter
 import com.ltd_tech.core.entities.TxtPage
+import com.ltd_tech.core.utils.CRScope
 import com.ltd_tech.core.utils.StringUtils
 import com.ltd_tech.core.utils.close
-import com.ltd_tech.core.widgets.pager.PagerView
+import com.ltd_tech.readsdk.views.PagerView
 import com.ltd_tech.readsdk.entities.BookChapterTable
 import com.ltd_tech.readsdk.entities.BookEntity
 import com.ltd_tech.readsdk.utils.DataControls
@@ -40,7 +42,7 @@ abstract class BookLoader(private val mPageView: PagerView, private val mBookEnt
     private var isFirstOpen = true
     private val isClose = false
 
-    private var coroutinesScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val scope: CRScope = CRScope()
 
     fun prepareDisplay(width: Int, height: Int) {
         // 获取PageView的宽高
@@ -91,7 +93,7 @@ abstract class BookLoader(private val mPageView: PagerView, private val mBookEnt
         }
 
         // 如果获取到的章节目录为空
-        if (mChapterList!!.isEmpty()) {
+        if (mChapterList.isNullOrEmpty()) {
             mStatus = STATUS_CATEGORY_EMPTY
             mPageView.drawCurPage(false)
             return
@@ -200,7 +202,9 @@ abstract class BookLoader(private val mPageView: PagerView, private val mBookEnt
 
     private fun dealLoadPageList(chapterPos: Int) {
         try {
+            // TODO 调整为异步
             mCurPageList = loadPageList(chapterPos)
+
             if (mCurPageList != null) {
                 if (mCurPageList?.isEmpty() == true) {
                     mStatus = STATUS_EMPTY
@@ -236,7 +240,9 @@ abstract class BookLoader(private val mPageView: PagerView, private val mBookEnt
         // 判断章节是否存在
         if (hasChapterData(chapter)) {
             // 获取章节的文本流
-            loadPages(chapter, getChapterReader(chapter))
+            runBlocking {
+                loadPages(chapter, getChapterReader(chapter))
+            }
         } else {
             null
         }
@@ -402,118 +408,127 @@ abstract class BookLoader(private val mPageView: PagerView, private val mBookEnt
      * @param br：章节的文本流
      * @return
      */
-    private fun loadPages(chapter: TxtChapter?, br: BufferedReader?): MutableList<TxtPage> {
+    private suspend fun loadPages(chapter: TxtChapter?, br: BufferedReader?): MutableList<TxtPage> {
         //生成的页面
         val pages = mutableListOf<TxtPage>()
         if (chapter == null || br == null) {
             // 数据错误直接返回空列表
             return pages
         }
-        //使用流的方式加载
-        val lines = mutableListOf<String>()
-        var rHeight = mVisibleHeight
-        var titleLinesCount = 0
-        var showTitle = true // 是否展示标题
-        //默认展示标题
-        var paragraph = chapter.title
-        try {
-            while (showTitle || (paragraph?.apply { paragraph = br.readLine() }) != null) {
-                paragraph = StringUtils.convertCC(paragraph)
-                // 重置段落
-                if (!showTitle) {
-                    paragraph = paragraph?.replace("\\s", "")
+        withContext(Dispatchers.IO) {
+            //使用流的方式加载
+            val lines = mutableListOf<String>()
+            var rHeight = mVisibleHeight
+            var titleLinesCount = 0
+            var showTitle = true // 是否展示标题
+            //默认展示标题
+            var paragraph = chapter.title
+            try {
+                while (showTitle || br.readLine().also { paragraph = it } != null) {
                     // 如果只有换行符，那么就不执行
-                    if (paragraph.equals("")) {
-                        continue
-                    }
-                    paragraph = StringUtils.halfToFull("  $paragraph\n");
-                } else {
-                    //设置 title 的顶部间距
-                    rHeight -= mTitlePara;
-                }
-                var wordCount: Int
-                var subStr: String
-                paragraph?.run {
-                    while (isNotEmpty()) {
-                        //当前空间，是否容得下一行文字
-                        rHeight -= if (showTitle) {
-                            getTitlePaintTextSize().toInt()
-                        } else {
-                            getTextPaintTextSize().toInt()
-                        }
-                        // 一页已经填充满了，创建 TextPage
-                        if (rHeight <= 0) {
-                            // 创建Page
-                            val page = TxtPage()
-                            page.position = pages.size
-                            page.title = StringUtils.convertCC(chapter.title)
-                            page.lines = lines
-                            page.titleLines = titleLinesCount
-                            pages.add(page)
-                            // 重置Lines
-                            lines.clear()
-                            rHeight = mVisibleHeight
-                            titleLinesCount = 0
-
+                    paragraph = StringUtils.convertCC(paragraph)
+//                    L.el("paragraph","loadPages paragraph length1 -> $paragraph")
+                    // 重置段落
+                    if (!showTitle) {
+                        paragraph = paragraph?.replace("\\s", "")
+                        // 如果只有换行符，那么就不执行
+                        if (TextUtils.isEmpty(paragraph)) {
                             continue
                         }
+                        paragraph = StringUtils.halfToFull("  $paragraph\n")
+                    } else {
+                        //设置 title 的顶部间距
+                        rHeight -= mTitlePara
+                    }
+                    var wordCount: Int
+                    var subStr: String
 
-                        //测量一行占用的字节数
-                        wordCount = if (showTitle) {
-                            breakTextTitlePaint(paragraph)
-                        } else {
-                            breakTextTextPaint(paragraph)
-                        }
-
-                        subStr = paragraph?.substring(0, wordCount) ?: ""
-                        if (subStr != "\n") {
-                            //将一行字节，存储到lines中
-                            lines.add(subStr)
-
-                            //设置段落间距
-                            if (showTitle) {
-                                titleLinesCount += 1;
-                                rHeight -= mTitleInterval;
+                    if (paragraph != null) {
+                        while ((paragraph?.length ?: 0) > 0) {
+                            //当前空间，是否容得下一行文字
+                            rHeight -= if (showTitle) {
+                                getTitlePaintTextSize().toInt()
                             } else {
-                                rHeight -= mTextInterval;
+                                getTextPaintTextSize().toInt()
+                            }
+                            // 一页已经填充满了，创建 TextPage
+                            if (rHeight <= 0) {
+                                // 创建Page
+                                val page = TxtPage()
+                                page.position = pages.size
+                                page.title = StringUtils.convertCC(chapter.title)
+                                page.lines = mutableListOf<String>().apply {
+                                    addAll(lines)
+                                }
+                                page.titleLines = titleLinesCount
+                                pages.add(page)
+                                // 重置Lines
+                                lines.clear()
+                                rHeight = mVisibleHeight
+                                titleLinesCount = 0
+
+                                continue
+                            }
+
+                            //测量一行占用的字节数
+                            wordCount = if (showTitle) {
+                                breakTextTitlePaint(paragraph)
+                            } else {
+                                breakTextTextPaint(paragraph)
+                            }
+                            subStr = paragraph?.substring(0, wordCount) ?: ""
+                            if (subStr != "\n") {
+                                //将一行字节，存储到lines中
+                                lines.add(subStr)
+
+                                //设置段落间距
+                                if (showTitle) {
+                                    titleLinesCount += 1;
+                                    rHeight -= mTitleInterval
+                                } else {
+                                    rHeight -= mTextInterval
+                                }
+                            }
+                            //裁剪
+                            paragraph = paragraph?.substring(wordCount)
+                            if (TextUtils.isEmpty(paragraph)) {
+                                break
                             }
                         }
-                        //裁剪
-                        paragraph = paragraph?.substring(wordCount);
+                    }
+
+                    //增加段落的间距
+                    if (!showTitle && lines.isNotEmpty()) {
+                        rHeight = rHeight - mTextPara + mTextInterval;
+                    }
+
+                    if (showTitle) {
+                        rHeight = rHeight - mTitlePara + mTitleInterval;
+                        showTitle = false
                     }
                 }
-
-
-                //增加段落的间距
-                if (!showTitle && lines.isNotEmpty()) {
-                    rHeight = rHeight - mTextPara + mTextInterval;
+                if (lines.isNotEmpty()) {
+                    //创建Page
+                    val page = TxtPage()
+                    page.position = pages.size
+                    page.title = StringUtils.convertCC(chapter.title)
+                    page.lines = mutableListOf<String>().apply {
+                        addAll(lines)
+                    }
+                    page.titleLines = titleLinesCount
+                    pages.add(page)
+                    //重置Lines
+                    lines.clear()
                 }
-
-                if (showTitle) {
-                    rHeight = rHeight - mTitlePara + mTitleInterval;
-                    showTitle = false
-                }
+            } catch (e: FileNotFoundException) {
+                e.printStackTrace()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            } finally {
+                close(br)
             }
-
-            if (lines.isNotEmpty()) {
-                //创建Page
-                val page = TxtPage()
-                page.position = pages.size
-                page.title = StringUtils.convertCC(chapter.title)
-                page.lines = lines
-                page.titleLines = titleLinesCount
-                pages.add(page)
-                //重置Lines
-                lines.clear()
-            }
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } finally {
-            close(br)
         }
-        return pages;
+        return pages
     }
 
     /**
@@ -532,8 +547,14 @@ abstract class BookLoader(private val mPageView: PagerView, private val mBookEnt
      * @return:获取下一的页面
      */
     private fun getNextPage(): TxtPage? {
-        val pos = (mCurPage?.position ?: 0) - 1
-        if (pos >= (mCurPageList?.size ?: 0)) {
+        val pos = ((mCurPage?.position ?: 0) + 1).let {
+            if (it < 0) {
+                0
+            } else {
+                it
+            }
+        }
+        if (mCurPageList != null && pos >= (mCurPageList?.size ?: 0)) {
             return null
         }
         mPageChangeListener?.onPageChange(pos)
@@ -561,13 +582,10 @@ abstract class BookLoader(private val mPageView: PagerView, private val mBookEnt
             return
         }
         //如果之前正在加载则取消
-        coroutinesScope.cancel()
-
-        coroutinesScope.launch {
+        scope.async {
             //调用异步进行预加载加载
             mNextPageList = loadPageList(nextChapter)
         }
-
     }
 
     /**
@@ -670,10 +688,10 @@ abstract class BookLoader(private val mPageView: PagerView, private val mBookEnt
         mCurChapterPos = pos
 
         // 将上一章的缓存设置为null
+        mPrePageList?.clear()
         mPrePageList = null
-        // 如果当前下一章缓存正在执行，则取消
-        coroutinesScope.cancel()
         // 将下一章缓存设置为null
+        mNextPageList?.clear()
         mNextPageList = null
 
         // 打开指定章节
@@ -683,7 +701,7 @@ abstract class BookLoader(private val mPageView: PagerView, private val mBookEnt
     /**
      * 刷新书籍章节信息
      */
-    fun refreshBookChapters(bookChapters : MutableList<BookChapterTable>){
+    fun refreshBookChapters(bookChapters: MutableList<BookChapterTable>) {
         mBookEntity.bookChapters = bookChapters
         refreshChapterList()
     }

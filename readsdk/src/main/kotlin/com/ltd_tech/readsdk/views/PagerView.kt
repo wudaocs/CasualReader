@@ -1,4 +1,4 @@
-package com.ltd_tech.core.widgets.pager
+package com.ltd_tech.readsdk.views
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -9,6 +9,10 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
+import com.ltd_tech.core.widgets.pager.Direction
+import com.ltd_tech.core.widgets.pager.OnPageChangeListener
+import com.ltd_tech.core.widgets.pager.PageMode
+import com.ltd_tech.core.widgets.pager.PagerAnim
 import com.ltd_tech.core.widgets.pager.anim.PagerCoverAnim
 import com.ltd_tech.core.widgets.pager.anim.PagerHorizonAnim
 import com.ltd_tech.core.widgets.pager.anim.PagerNoneAnim

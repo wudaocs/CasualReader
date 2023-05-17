@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.ltd_tech.core.MBaseActivity
 import com.ltd_tech.core.broadcasts.BatteryAndTimeTickReceiver
 import com.ltd_tech.core.entities.TxtChapter
@@ -30,7 +31,7 @@ import com.ltd_tech.core.utils.ScreenUtils
 import com.ltd_tech.core.utils.StringUtils
 import com.ltd_tech.core.utils.SysUtils
 import com.ltd_tech.core.utils.gson.JsonUtil
-import com.ltd_tech.core.widgets.pager.TouchListener
+import com.ltd_tech.readsdk.views.TouchListener
 import com.ltd_tech.readsdk.R
 import com.ltd_tech.readsdk.consts.KEY_EXTRA_BOOK
 import com.ltd_tech.readsdk.consts.KEY_EXTRA_BOOK_IS_LOCAL
@@ -112,7 +113,6 @@ class ReadDetailActivity : MBaseActivity<ActivityReadDetailBinding, ReadDetailVi
         //半透明化StatusBar
         SysUtils.transparentStatusBar(this)
 
-
         //初始化屏幕常亮类
         mWakeLock = (getSystemService(POWER_SERVICE) as PowerManager?)?.newWakeLock(
             PowerManager.SCREEN_DIM_WAKE_LOCK,
@@ -122,9 +122,7 @@ class ReadDetailActivity : MBaseActivity<ActivityReadDetailBinding, ReadDetailVi
 
         mPageLoader = bind.pvActivityReadDetail.getPageLoader(mBookEntity)
 
-        mSettingDialog = ReadSettingDialog(this, mPageLoader){
-
-        }
+        mSettingDialog = ReadSettingDialog(this, mPageLoader){}
 
         bind.dlActivityReadDetail.run {
             //禁止滑动展示DrawerLayout
@@ -173,6 +171,7 @@ class ReadDetailActivity : MBaseActivity<ActivityReadDetailBinding, ReadDetailVi
             mPageLoader?.skipToChapter(pos)
         }
         bind.rvActivityReadDetailCategory.adapter = mBookCategoryAdapter
+        bind.rvActivityReadDetailCategory.layoutManager = LinearLayoutManager(this)
     }
 
     /**
@@ -481,7 +480,9 @@ class ReadDetailActivity : MBaseActivity<ActivityReadDetailBinding, ReadDetailVi
             if (!ReadSettingManager.isFullScreen()) {
                 toggleMenu(true)
             }
-        } else if (mSettingDialog.isShowing()) {
+            // 退出
+            super.onBackPressed()
+        } else if (mSettingDialog.isShowing) {
             mSettingDialog.dismiss()
         } else if (bind.dlActivityReadDetail.isDrawerOpen(GravityCompat.START)) {
             bind.dlActivityReadDetail.closeDrawer(GravityCompat.START)
@@ -533,7 +534,7 @@ class ReadDetailActivity : MBaseActivity<ActivityReadDetailBinding, ReadDetailVi
         if (bind.ablActivityReadDetailMenu.visibility == View.VISIBLE) {
             toggleMenu(true)
             return true
-        } else if (mSettingDialog.isShowing()) {
+        } else if (mSettingDialog.isShowing) {
             mSettingDialog.dismiss()
             return true
         }

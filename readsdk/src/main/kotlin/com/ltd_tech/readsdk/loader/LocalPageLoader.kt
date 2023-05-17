@@ -4,10 +4,10 @@ import com.ltd_tech.core.entities.TxtChapter
 import com.ltd_tech.core.utils.CharsetText
 import com.ltd_tech.core.utils.DateUtils
 import com.ltd_tech.core.utils.MD5
-import com.ltd_tech.core.utils.RCScope
+import com.ltd_tech.core.utils.CRScope
 import com.ltd_tech.core.utils.close
 import com.ltd_tech.core.utils.getCharset
-import com.ltd_tech.core.widgets.pager.PagerView
+import com.ltd_tech.readsdk.views.PagerView
 import com.ltd_tech.readsdk.entities.BookChapterTable
 import com.ltd_tech.readsdk.entities.BookEntity
 import com.ltd_tech.readsdk.utils.DataControls
@@ -51,7 +51,7 @@ class LocalPageLoader(pagerView: PagerView, private val bookEntity: BookEntity) 
     //编码类型
     private var mCharset: CharsetText? = null
 
-    private val scope: RCScope = RCScope()
+    private val scope: CRScope = CRScope()
 
     init {
         mStatus = STATUS_PARING
@@ -117,6 +117,7 @@ class LocalPageLoader(pagerView: PagerView, private val bookEntity: BookEntity) 
                     }
 
                 } catch (e: Exception) {
+                    e.printStackTrace()
                     chapterError()
                 }
             }

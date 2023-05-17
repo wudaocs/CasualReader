@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.graphics.drawable.Drawable
+import android.os.Bundle
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.WindowManager
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
@@ -33,13 +35,17 @@ class ReadSettingDialog(
 ) :
     Dialog(activity, R.style.ReadSettingDialog) {
 
-    private var binding: DialogReadSettingBinding =
-        DataBindingUtil.setContentView(activity, R.layout.dialog_read_setting)
+    private var binding: DialogReadSettingBinding = DataBindingUtil.inflate(LayoutInflater.from(activity), R.layout.dialog_read_setting, null, false)
 
     private var mSettingBackgroundAdapter: SettingBackgroundAdapter? = null
 
     init {
         initWidget()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(binding.root)
     }
 
     private fun initWidget() {
@@ -61,6 +67,13 @@ class ReadSettingDialog(
         setUpAdapter()
 
         setListener()
+
+        val wd = window
+        val lp = wd?.attributes
+        lp?.width = WindowManager.LayoutParams.MATCH_PARENT
+        lp?.height = WindowManager.LayoutParams.WRAP_CONTENT
+        lp?.gravity = Gravity.BOTTOM
+        wd?.attributes = lp
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -209,6 +222,7 @@ class ReadSettingDialog(
 
         }
     }
+
 
     /**
      * 更新亮度进度

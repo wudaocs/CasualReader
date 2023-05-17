@@ -2,9 +2,9 @@ package com.ltd_tech.core.widgets.pager
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Rect
 import android.view.MotionEvent
 import android.view.View
+import android.view.animation.LinearInterpolator
 import android.widget.Scroller
 import java.util.*
 
@@ -54,6 +54,22 @@ abstract class PagerAnim(
     //上一个触碰点
     protected var mLastX = 0f
     protected var mLastY = 0f
+
+    init {
+        mScreenWidth = width
+        mScreenHeight = high
+
+        mMarginWidth = marginWidth
+        mMarginHeight = marginHeight
+
+        mViewWidth = mScreenWidth - mMarginWidth * 2
+        mViewHeight = mScreenHeight - mMarginHeight * 2
+
+        mView = view
+        mListener = listener
+
+        mScroller = Scroller(mView?.context, LinearInterpolator())
+    }
 
     /**
      * 开启翻页动画

@@ -3,7 +3,9 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:background="#000000">
 
         <LinearLayout
             android:id="@+id/ll_dialog_read_setting_root"

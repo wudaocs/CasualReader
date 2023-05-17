@@ -49,6 +49,7 @@ abstract class MBaseActivity<T : ViewDataBinding, V : BaseViewModel> : BaseActiv
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         checkActivity(savedInstanceState)
+        initArgus()
         val layout = layout()
         bind = when (layout) {
             is Int -> {

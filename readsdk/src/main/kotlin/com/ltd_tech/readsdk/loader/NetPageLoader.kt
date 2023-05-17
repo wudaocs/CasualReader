@@ -1,7 +1,7 @@
 package com.ltd_tech.readsdk.loader
 
 import com.ltd_tech.core.entities.TxtChapter
-import com.ltd_tech.core.widgets.pager.PagerView
+import com.ltd_tech.readsdk.views.PagerView
 import com.ltd_tech.readsdk.entities.BookEntity
 import java.io.BufferedReader
 

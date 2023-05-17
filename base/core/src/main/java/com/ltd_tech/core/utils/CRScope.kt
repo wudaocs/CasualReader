@@ -3,6 +3,7 @@ package com.ltd_tech.core.utils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 /**
@@ -10,10 +11,12 @@ import kotlinx.coroutines.launch
  * author: Kaos
  * created on 2023/5/16
  */
-class RCScope {
+class CRScope {
+
+    private var coroutinesScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     private val scope = CoroutineScope(Dispatchers.Main)
-    var job: Job? = null
+    private var job: Job? = null
 
     fun execute(doWork: suspend () -> Unit) {
         stop()

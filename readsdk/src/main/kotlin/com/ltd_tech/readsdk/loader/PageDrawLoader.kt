@@ -12,11 +12,12 @@ import androidx.core.content.ContextCompat
 import com.ltd_tech.core.entities.TxtChapter
 import com.ltd_tech.core.entities.TxtPage
 import com.ltd_tech.core.utils.DateUtils
+import com.ltd_tech.core.utils.L
 import com.ltd_tech.core.utils.ResourceUtils
 import com.ltd_tech.core.utils.ScreenUtils
 import com.ltd_tech.core.widgets.pager.PageMode
 import com.ltd_tech.core.widgets.pager.PageStyle
-import com.ltd_tech.core.widgets.pager.PagerView
+import com.ltd_tech.readsdk.views.PagerView
 import com.ltd_tech.core.widgets.pager.ReadConfigManager
 import com.ltd_tech.readsdk.R
 import com.ltd_tech.readsdk.entities.BookEntity
@@ -302,7 +303,6 @@ open class PageDrawLoader(private val mPageView: PagerView, private val mBookEnt
             drawContent(bitmap)
         }
         //更新绘制
-        //更新绘制
         mPageView.invalidate()
     }
 
@@ -487,7 +487,7 @@ open class PageDrawLoader(private val mPageView: PagerView, private val mBookEnt
             var str: String
             mCurPage?.run {
                 //对标题进行绘制
-                for (i in 0..titleLines) {
+                for (i in 0 until titleLines) {
                     str = lines?.get(i) ?: ""
                     //设置顶部间距
                     if (i == 0) {
@@ -506,18 +506,19 @@ open class PageDrawLoader(private val mPageView: PagerView, private val mBookEnt
                         //行间距
                         titleInterval
                     }
+                }
 
-                    //对内容进行绘制
-                    for (j in titleLines..(lines?.size ?: 0)) {
-                        str = lines?.get(i) ?: ""
-                        if (mTextPaint != null) {
-                            canvas.drawText(str, mMarginWidth.toFloat(), top, mTextPaint!!)
-                        }
-                        top += if (str.endsWith("\n")) {
-                            paragraphInterval
-                        } else {
-                            interval
-                        }
+                //对内容进行绘制
+                for (j in titleLines until(lines?.size ?: 0)) {
+                    str = lines?.get(j) ?: ""
+                    L.el("页面内容", "str= $str")
+                    if (mTextPaint != null) {
+                        canvas.drawText(str, mMarginWidth.toFloat(), top, mTextPaint!!)
+                    }
+                    top += if (str.endsWith("\n")) {
+                        paragraphInterval
+                    } else {
+                        interval
                     }
                 }
 
@@ -617,7 +618,14 @@ open class PageDrawLoader(private val mPageView: PagerView, private val mBookEnt
      */
     fun getCurPage(pos: Int): TxtPage? {
         mPageChangeListener?.onPageChange(pos)
-        return mCurPageList?.get(pos)
+        return mCurPageList?.get(pos.let {
+            val lSize = mCurPageList?.size ?: 0
+            if (pos >= lSize) {
+                lSize
+            } else {
+                pos
+            }
+        })
     }
 
     /**
