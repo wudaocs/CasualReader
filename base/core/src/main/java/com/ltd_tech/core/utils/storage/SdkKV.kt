@@ -62,7 +62,7 @@ object SdkKV {
     /**
      * 获取亮度模式
      */
-    fun isNightMode() = TPS.get(shared_read_night_mode, true)
+    fun isNightMode() = TPS.get(shared_read_night_mode, false)
 
     /**
      * 设置亮度模式
@@ -81,7 +81,7 @@ object SdkKV {
     /**
      * 获取当前文字大小
      */
-    fun getTextSize() = TPS.get(shared_read_night_mode, ScreenUtils.sp2px(28))
+    fun getTextSize() = TPS.get(shared_read_text_size, ScreenUtils.dp2px(20f))
 
     fun isDefaultTextSize() = TPS.get(shared_read_is_text_default, false)
 

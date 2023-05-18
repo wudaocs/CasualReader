@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="false"
-        android:background="#000000">
-
         <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/ll_dialog_read_setting_root"
             android:layout_width="match_parent"
             android:layout_height="280dp"
@@ -17,9 +12,7 @@
             android:orientation="vertical"
             android:paddingLeft="12dp"
             android:paddingRight="12dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            >
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -212,7 +205,5 @@
 
         </LinearLayout>
 
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
 

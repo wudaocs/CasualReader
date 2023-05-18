@@ -14,6 +14,8 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
+import androidx.appcompat.app.ActionBar
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -31,7 +33,6 @@ import com.ltd_tech.core.utils.ScreenUtils
 import com.ltd_tech.core.utils.StringUtils
 import com.ltd_tech.core.utils.SysUtils
 import com.ltd_tech.core.utils.gson.JsonUtil
-import com.ltd_tech.readsdk.views.TouchListener
 import com.ltd_tech.readsdk.R
 import com.ltd_tech.readsdk.consts.KEY_EXTRA_BOOK
 import com.ltd_tech.readsdk.consts.KEY_EXTRA_BOOK_IS_LOCAL
@@ -48,6 +49,7 @@ import com.ltd_tech.readsdk.page.adapter.BookCategoryAdapter
 import com.ltd_tech.readsdk.utils.DataControls
 import com.ltd_tech.readsdk.utils.ReadSettingManager
 import com.ltd_tech.readsdk.views.ReadSettingDialog
+import com.ltd_tech.readsdk.views.TouchListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -108,8 +110,25 @@ class ReadDetailActivity : MBaseActivity<ActivityReadDetailBinding, ReadDetailVi
         mBookId = mBookEntity?._id
     }
 
+    private fun supportActionBar(toolbar: Toolbar?): ActionBar? {
+        setSupportActionBar(toolbar)
+        val actionBar: ActionBar? = supportActionBar
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true)
+            actionBar.setDisplayShowHomeEnabled(true)
+        }
+        toolbar?.setNavigationOnClickListener { v -> finish() }
+        return actionBar
+    }
+
     override fun bindWidget() {
-        bind.toolbar.title = mBookEntity?.title
+        // 显示返回按钮
+        bind.toolbar.run {
+            title = mBookEntity?.title
+
+            supportActionBar(this)
+        }
+
         //半透明化StatusBar
         SysUtils.transparentStatusBar(this)
 
@@ -122,7 +141,7 @@ class ReadDetailActivity : MBaseActivity<ActivityReadDetailBinding, ReadDetailVi
 
         mPageLoader = bind.pvActivityReadDetail.getPageLoader(mBookEntity)
 
-        mSettingDialog = ReadSettingDialog(this, mPageLoader){}
+        mSettingDialog = ReadSettingDialog(this, mPageLoader)
 
         bind.dlActivityReadDetail.run {
             //禁止滑动展示DrawerLayout
@@ -186,8 +205,8 @@ class ReadDetailActivity : MBaseActivity<ActivityReadDetailBinding, ReadDetailVi
 
             @SuppressLint("NotifyDataSetChanged")
             override fun requestChapters(requestChapters: MutableList<TxtChapter>) {
-                mViewModel?.loadChapter(mBookId, requestChapters){
-                    if (it){
+                mViewModel?.loadChapter(mBookId, requestChapters) {
+                    if (it) {
                         // 成功
                         if (mPageLoader?.getPageStatus() == STATUS_LOADING) {
                             mPageLoader?.openChapter()
@@ -304,6 +323,7 @@ class ReadDetailActivity : MBaseActivity<ActivityReadDetailBinding, ReadDetailVi
         mSettingDialog.setOnDismissListener {
             hideSystemBar()
         }
+
     }
 
     /**

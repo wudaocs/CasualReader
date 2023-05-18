@@ -3,6 +3,7 @@ package com.ltd_tech.readsdk.loader
 import android.text.TextUtils
 import com.ltd_tech.core.entities.TxtChapter
 import com.ltd_tech.core.entities.TxtPage
+import com.ltd_tech.core.exts.globalToast
 import com.ltd_tech.core.utils.CRScope
 import com.ltd_tech.core.utils.StringUtils
 import com.ltd_tech.core.utils.close
@@ -279,11 +280,11 @@ abstract class BookLoader(private val mPageView: PagerView, private val mBookEnt
         }
 
         if (!hasNextChapter()) {
+            globalToast("已读完！")
             return false
         }
 
         mCancelPage = mCurPage
-        // 解析下一章数据
         // 解析下一章数据
         mCurPage = if (parseNextChapter()) {
             mCurPageList!![0]

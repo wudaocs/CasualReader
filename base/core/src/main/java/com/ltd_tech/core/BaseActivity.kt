@@ -1,10 +1,10 @@
 package com.ltd_tech.core
 
-import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 
 /**
  * 预留基类
  */
-abstract class BaseActivity : ComponentActivity() {
+abstract class BaseActivity : AppCompatActivity() {
 
 }

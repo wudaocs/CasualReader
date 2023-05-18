@@ -1,43 +1,44 @@
 package com.ltd_tech.core.widgets.pager
 
+import com.ltd_tech.core.utils.storage.SdkKV
+
 object ReadConfigManager {
 
     fun getPageMode(): PageMode {
-
-        // TODO 需要替换为 mmkv方式
-        return PageMode.values()[0]
+        return SdkKV.getPageMode()
     }
 
     fun getPageStyle(): PageStyle {
-
-        // TODO 需要替换为 mmkv方式
-        return PageStyle.values()[0]
+        return SdkKV.getPageStyle()
     }
 
     fun getTextSize(): Int {
-
-        return 20
+        return SdkKV.getTextSize()
     }
 
-    fun isNightMode(): Boolean = false
+    fun isNightMode(): Boolean = SdkKV.isNightMode()
 
     fun setNightMode(isNightMode: Boolean) {
-
+        SdkKV.setNightMode(isNightMode)
     }
 
     fun setPageStyle(pageStyle: PageStyle?) {
-
+        pageStyle?.run {
+            SdkKV.setPageStyle(this)
+        }
     }
 
     /**
      * 设置当前显示的字体
      */
     fun setTextSize(textSize: Int) {
-
+        SdkKV.setTextSize(textSize)
     }
 
     fun setPageMode(mode: PageMode?) {
-
+        mode?.run {
+            SdkKV.setPageMode(this)
+        }
     }
 
 }

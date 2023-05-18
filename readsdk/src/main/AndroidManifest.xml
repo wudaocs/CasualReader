@@ -3,6 +3,8 @@
 
     <application>
         <activity android:name="com.ltd_tech.readsdk.page.activities.ReadDetailActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+            />
     </application>
 </manifest>

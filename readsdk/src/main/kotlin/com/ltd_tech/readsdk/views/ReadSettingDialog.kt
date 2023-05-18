@@ -13,6 +13,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.GridLayoutManager
+import com.ltd_tech.core.exts.globalToast
 import com.ltd_tech.core.utils.BrightnessUtils
 import com.ltd_tech.core.utils.ScreenUtils
 import com.ltd_tech.core.widgets.pager.PageMode
@@ -31,7 +32,6 @@ import com.ltd_tech.readsdk.utils.ReadSettingManager
 class ReadSettingDialog(
     private val activity: Activity,
     private val bookLoader: BookLoader?,
-    private val settingDone: () -> Unit = {}
 ) :
     Dialog(activity, R.style.ReadSettingDialog) {
 
@@ -46,6 +46,12 @@ class ReadSettingDialog(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        val wd = window
+        val lp = wd?.attributes
+        lp?.width = ScreenUtils.width
+        lp?.height = WindowManager.LayoutParams.WRAP_CONTENT
+        lp?.gravity = Gravity.BOTTOM
+        wd?.attributes = lp
     }
 
     private fun initWidget() {
@@ -67,13 +73,6 @@ class ReadSettingDialog(
         setUpAdapter()
 
         setListener()
-
-        val wd = window
-        val lp = wd?.attributes
-        lp?.width = WindowManager.LayoutParams.MATCH_PARENT
-        lp?.height = WindowManager.LayoutParams.WRAP_CONTENT
-        lp?.gravity = Gravity.BOTTOM
-        wd?.attributes = lp
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -170,7 +169,7 @@ class ReadSettingDialog(
                 val fontSize = tvDialogReadSettingFont.text.toString().toInt() - 1
                 if (fontSize > 0) {
                     tvDialogReadSettingFont.text = fontSize.toString()
-                    bookLoader?.setTextSize(fontSize)
+                    bookLoader?.setOrUpdateTextSize(fontSize)
                 }
             }
 
@@ -181,17 +180,17 @@ class ReadSettingDialog(
                 val fontSize = tvDialogReadSettingFont.text.toString().toInt() + 1
                 if (fontSize < 100){
                     tvDialogReadSettingFont.text = fontSize.toString()
-                    bookLoader?.setTextSize(fontSize)
+                    bookLoader?.setOrUpdateTextSize(fontSize)
                 } else {
-                    // TODO 全局提示超过大小
+                    globalToast("字体大小超过上限")
                 }
             }
 
             cbDialogReadSettingFontDefault.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
-                    val fontSize: Int = ScreenUtils.dp2px(16f)
+                    val fontSize: Int = ScreenUtils.dp2px(20f)
                     tvDialogReadSettingFont.text = fontSize.toString()
-                    bookLoader?.setTextSize(fontSize)
+                    bookLoader?.setOrUpdateTextSize(fontSize)
                 }
             }
 
@@ -233,11 +232,6 @@ class ReadSettingDialog(
             BrightnessUtils.setBrightness(activity, progress)
             ReadSettingManager.setBrightness(progress)
         }
-    }
-
-    override fun dismiss() {
-        super.dismiss()
-        settingDone()
     }
 
 
