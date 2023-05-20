@@ -1,4 +1,4 @@
-// Copyright (C) 2004-2021 Artifex Software, Inc.
+// Copyright (C) 2004-2023 Artifex Software, Inc.
 //
 // This file is part of MuPDF.
 //
@@ -37,6 +37,7 @@ public class Pixmap
 	}
 
 	private native long newNative(ColorSpace cs, int x, int y, int w, int h, boolean alpha);
+	private native long newNativeFromColorAndMask(Pixmap color, Pixmap mask);
 
 	private Pixmap(long p) {
 		pointer = p;
@@ -66,6 +67,10 @@ public class Pixmap
 		this(cs, rect, false);
 	}
 
+	public Pixmap(Pixmap color, Pixmap mask) {
+		pointer = newNativeFromColorAndMask(color, mask);
+	}
+
 	public native void clear();
 	private native void clearWithValue(int value);
 	public void clear(int value) {
@@ -73,6 +78,11 @@ public class Pixmap
 	}
 
 	public native void saveAsPNG(String filename);
+	public native void saveAsJPEG(String filename, int quality);
+	public native void saveAsPAM(String filename);
+	public native void saveAsPNM(String filename);
+	public native void saveAsPBM(String filename);
+	public native void saveAsPKM(String filename);
 
 	public native int getX();
 	public native int getY();
@@ -87,10 +97,14 @@ public class Pixmap
 	public native int[] getPixels(); /* only valid for RGBA or BGRA pixmaps */
 	public native int getXResolution();
 	public native int getYResolution();
+
+	public native void setResolution(int xres, int yres);
+
 	public native void invert();
 	public native void invertLuminance();
 	public native void gamma(float gamma);
 	public native void tint(int black, int white);
+	public native Pixmap convertToColorSpace(ColorSpace cs, ColorSpace proof, DefaultColorSpaces defaultCs, int colorParams, boolean keepAlpha);
 
 	public Rect getBounds() {
 		int x = getX();

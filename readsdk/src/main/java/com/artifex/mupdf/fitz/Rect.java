@@ -22,19 +22,23 @@
 
 package com.artifex.mupdf.fitz;
 
-public class RectI
+public class Rect
 {
-	public int x0;
-	public int y0;
-	public int x1;
-	public int y1;
+	static {
+		Context.init();
+	}
+
+	public float x0;
+	public float y0;
+	public float x1;
+	public float y1;
 
 	// Minimum and Maximum values that can survive round trip
 	// from int to float.
 	private static final int FZ_MIN_INF_RECT = 0x80000000;
 	private static final int FZ_MAX_INF_RECT = 0x7fffff80;
 
-	public RectI()
+	public Rect()
 	{
 		// Invalid (hence zero area) rectangle. Unioning
 		// this with any rectangle (or point) will 'cure' it
@@ -42,25 +46,36 @@ public class RectI
 		x1 = y1 = FZ_MIN_INF_RECT;
 	}
 
-	public RectI(int x0, int y0, int x1, int y1) {
+	public Rect(float x0, float y0, float x1, float y1)
+	{
 		this.x0 = x0;
 		this.y0 = y0;
 		this.x1 = x1;
 		this.y1 = y1;
 	}
 
-	public RectI(RectI r) {
+	public Rect(Quad q)
+	{
+		this.x0 = q.ll_x;
+		this.y0 = q.ll_y;
+		this.x1 = q.ur_x;
+		this.y1 = q.ur_y;
+	}
+
+	public Rect(Rect r)
+	{
 		this(r.x0, r.y0, r.x1, r.y1);
 	}
 
-	public RectI(Rect r) {
-		this.x0 = (int)Math.floor(r.x0);
-		this.y0 = (int)Math.ceil(r.y0);
-		this.x1 = (int)Math.floor(r.x1);
-		this.y1 = (int)Math.ceil(r.y1);
+	public Rect(RectI r)
+	{
+		this(r.x0, r.y0, r.x1, r.y1);
 	}
 
-	public String toString() {
+	public native void adjustForStroke(StrokeState state, Matrix ctm);
+
+	public String toString()
+	{
 		return "[" + x0 + " " + y0 + " " + x1 + " " + y1 + "]";
 	}
 
@@ -72,7 +87,7 @@ public class RectI
 			this.y1 == FZ_MAX_INF_RECT;
 	}
 
-	public RectI transform(Matrix tm)
+	public Rect transform(Matrix tm)
 	{
 		if (this.isInfinite())
 			return this;
@@ -82,7 +97,8 @@ public class RectI
 		float ax0 = x0 * tm.a;
 		float ax1 = x1 * tm.a;
 
-		if (ax0 > ax1) {
+		if (ax0 > ax1)
+		{
 			float t = ax0;
 			ax0 = ax1;
 			ax1 = t;
@@ -91,7 +107,8 @@ public class RectI
 		float cy0 = y0 * tm.c;
 		float cy1 = y1 * tm.c;
 
-		if (cy0 > cy1) {
+		if (cy0 > cy1)
+		{
 			float t = cy0;
 			cy0 = cy1;
 			cy1 = t;
@@ -102,7 +119,8 @@ public class RectI
 		float bx0 = x0 * tm.b;
 		float bx1 = x1 * tm.b;
 
-		if (bx0 > bx1) {
+		if (bx0 > bx1)
+		{
 			float t = bx0;
 			bx0 = bx1;
 			bx1 = t;
@@ -111,7 +129,8 @@ public class RectI
 		float dy0 = y0 * tm.d;
 		float dy1 = y1 * tm.d;
 
-		if (dy0 > dy1) {
+		if (dy0 > dy1)
+		{
 			float t = dy0;
 			dy0 = dy1;
 			dy1 = t;
@@ -119,20 +138,25 @@ public class RectI
 		bx0 += dy0 + tm.f;
 		bx1 += dy1 + tm.f;
 
-		x0 = (int)Math.floor(ax0);
-		x1 = (int)Math.ceil(ax1);
-		y0 = (int)Math.floor(bx0);
-		y1 = (int)Math.ceil(bx1);
+		x0 = ax0;
+		x1 = ax1;
+		y0 = bx0;
+		y1 = bx1;
 
 		return this;
 	}
 
-	public boolean contains(int x, int y)
+	public boolean contains(float x, float y)
 	{
 		if (isEmpty())
 			return false;
 
 		return (x >= x0 && x < x1 && y >= y0 && y < y1);
+	}
+
+	public boolean contains(Point p)
+	{
+		return contains(p.x, p.y);
 	}
 
 	public boolean contains(Rect r)
@@ -150,10 +174,10 @@ public class RectI
 
 	public boolean isValid()
 	{
-		return (x0 <= x1 || y0 <= y1);
+		return (x0 <= x1 && y0 <= y1);
 	}
 
-	public void union(RectI r)
+	public void union(Rect r)
 	{
 		if (!r.isValid() || this.isInfinite())
 			return;
@@ -175,4 +199,41 @@ public class RectI
 		if (r.y1 > y1)
 			y1 = r.y1;
 	}
+
+	public void inset(float dx, float dy) {
+		if (!isValid() || isInfinite() || isEmpty())
+			return;
+		x0 += dx;
+		y0 += dy;
+		x1 -= dx;
+		y1 -= dy;
+	}
+
+	public void inset(float left, float top, float right, float bottom) {
+		if (!isValid() || isInfinite() || isEmpty())
+			return;
+		x0 += left;
+		y0 += top;
+		x1 -= right;
+		y1 -= bottom;
+	}
+
+	public void offset(float dx, float dy) {
+		if (!isValid() || isInfinite() || isEmpty())
+			return;
+		x0 += dx;
+		y0 += dy;
+		x1 += dx;
+		y1 += dy;
+	}
+
+	public void offsetTo(float left, float top) {
+		if (!isValid() || isInfinite() || isEmpty())
+			return;
+		x1 += left - x0;
+		y1 += top - y0;
+		x0 = left;
+		y0 = top;
+	}
+
 }

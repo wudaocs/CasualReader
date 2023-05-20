@@ -46,7 +46,7 @@ public class StructuredText
 		pointer = p;
 	}
 
-	public native Quad[] search(String needle);
+	public native Quad[][] search(String needle);
 	public native Quad[] highlight(Point a, Point b);
 	public native Quad snapSelection(Point a, Point b, int mode);
 	public native String copy(Point a, Point b);
@@ -109,17 +109,17 @@ public class StructuredText
 		}
 	}
 
-	public class TextBlock {
+	public static class TextBlock {
 		public TextLine[] lines;
 		public Rect bbox;
 	}
 
-	public class TextLine {
+	public static class TextLine {
 		public TextChar[] chars;
 		public Rect bbox;
 	}
 
-	public class TextChar {
+	public static class TextChar {
 		public int c;
 		public Quad quad;
 		public boolean isWhitespace() {

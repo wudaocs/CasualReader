@@ -28,6 +28,7 @@ import android.widget.Toast;
 import com.artifex.mupdf.fitz.Cookie;
 import com.artifex.mupdf.fitz.Link;
 import com.artifex.mupdf.fitz.Quad;
+import com.ltd_tech.readsdk.R;
 
 // Make our ImageViews opaque to optimize redraw
 class OpaqueImageView extends ImageView {

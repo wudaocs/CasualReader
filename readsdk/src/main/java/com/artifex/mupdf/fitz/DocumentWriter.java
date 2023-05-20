@@ -22,7 +22,7 @@
 
 package com.artifex.mupdf.fitz;
 
-public class ColorSpace
+public class DocumentWriter
 {
 	static {
 		Context.init();
@@ -36,35 +36,27 @@ public class ColorSpace
 		finalize();
 	}
 
-	private ColorSpace(long p) {
-		pointer = p;
+	private native static long newNativeDocumentWriter(String filename, String format, String options);
+	private native static long newNativeDocumentWriterWithSeekableOutputStream(SeekableOutputStream stream, String format, String options);
+
+	public DocumentWriter(String filename, String format, String options) {
+		pointer = newNativeDocumentWriter(filename, format, options);
 	}
 
-	private static native long nativeDeviceGray();
-	private static native long nativeDeviceRGB();
-	private static native long nativeDeviceBGR();
-	private static native long nativeDeviceCMYK();
-
-	protected static ColorSpace fromPointer(long p) {
-		if (p == DeviceGray.pointer) return DeviceGray;
-		if (p == DeviceRGB.pointer) return DeviceRGB;
-		if (p == DeviceBGR.pointer) return DeviceBGR;
-		if (p == DeviceCMYK.pointer) return DeviceCMYK;
-		return new ColorSpace(p);
+	public DocumentWriter(SeekableOutputStream stream, String format, String options) {
+		pointer = newNativeDocumentWriterWithSeekableOutputStream(stream, format, options);
 	}
 
-	public static ColorSpace DeviceGray = new ColorSpace(nativeDeviceGray());
-	public static ColorSpace DeviceRGB = new ColorSpace(nativeDeviceRGB());
-	public static ColorSpace DeviceBGR = new ColorSpace(nativeDeviceBGR());
-	public static ColorSpace DeviceCMYK = new ColorSpace(nativeDeviceCMYK());
+	public native Device beginPage(Rect mediabox);
+	public native void endPage();
+	public native void close();
 
-	public native int getNumberOfComponents();
+	private long ocrlistener;
 
-	public String toString() {
-		if (this == DeviceGray) return "DeviceGray";
-		if (this == DeviceRGB) return "DeviceRGB";
-		if (this == DeviceBGR) return "DeviceBGR";
-		if (this == DeviceCMYK) return "DeviceCMYK";
-		return "ColorSpace(" + getNumberOfComponents() + ")";
+	public interface OCRListener
+	{
+		boolean progress(int page, int percent);
 	}
+
+	public native void addOCRListener(OCRListener listener);
 }

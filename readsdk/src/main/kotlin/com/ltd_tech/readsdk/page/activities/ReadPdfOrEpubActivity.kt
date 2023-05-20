@@ -37,7 +37,7 @@ import com.ltd_tech.core.utils.ScreenUtils
 import com.ltd_tech.core.utils.storage.SdkKV
 import com.ltd_tech.readsdk.R
 import com.ltd_tech.readsdk.databinding.ActivityReadPdfOrEpubBinding
-import com.ltd_tech.readsdk.utils.DocumentParser
+import com.artifex.mupdf.DocumentJavaCreator
 import java.util.Locale
 
 /**
@@ -75,9 +75,7 @@ class ReadPdfOrEpubActivity : MBaseActivity<ActivityReadPdfOrEpubBinding, BaseVi
 
     private var mLinkHighlight = false
 
-    private val mDocumentParser by lazy {
-        DocumentParser()
-    }
+    private lateinit var mDocumentParser : DocumentJavaCreator
 
     /** ---------↑↑↑------------------------↑↑↑--------- **/
 
@@ -104,7 +102,9 @@ class ReadPdfOrEpubActivity : MBaseActivity<ActivityReadPdfOrEpubBinding, BaseVi
                 intent.getIntExtra(componentName.packageName + ".ReturnToLibraryActivity", 0) != 0
 
         }
+        mDocumentParser = DocumentJavaCreator()
         super.onCreate(savedInstanceState)
+
     }
 
     override fun initArgus() {
@@ -119,13 +119,13 @@ class ReadPdfOrEpubActivity : MBaseActivity<ActivityReadPdfOrEpubBinding, BaseVi
         if (mMuPDFCore == null) {
             return
         } else {
-            if (mMuPDFCore!!.needsPassword()) {
+            if (mMuPDFCore?.needsPassword() == true) {
                 requestPassword()
                 return
             }
         }
 
-        if (mMuPDFCore!!.countPages() == 0) {
+        if (mMuPDFCore?.countPages() == 0) {
             mMuPDFCore = null
         }
         if (mMuPDFCore == null) {
