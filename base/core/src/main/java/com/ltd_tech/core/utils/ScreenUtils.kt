@@ -27,6 +27,8 @@ object ScreenUtils {
 
     private val density = application?.resources?.displayMetrics?.density ?: 1f
 
+    val densityDpi = application?.resources?.displayMetrics?.densityDpi ?: 0
+
     /**
      *
      * @return 返回全屏宽度

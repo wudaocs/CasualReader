@@ -49,4 +49,10 @@ object StringUtils {
         }
         return String(c)
     }
+
+    fun toHex(digest: ByteArray): String {
+        val builder = StringBuilder(2 * digest.size)
+        for (b in digest) builder.append(String.format("%02x", b))
+        return builder.toString()
+    }
 }

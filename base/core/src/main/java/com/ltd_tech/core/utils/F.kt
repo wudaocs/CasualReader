@@ -145,8 +145,8 @@ fun getFolder(filePath: String?): File? {
 /**
  * 文件类型
  */
-enum class CRFileType {
-    TXT, EPUB, PDF
+enum class CRFileType(val value : String) {
+    TXT(".txt"), EPUB(".epub"), PDF(".pdf")
 }
 
 /**

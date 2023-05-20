@@ -11,6 +11,22 @@ import com.ltd_tech.core.widgets.pager.PageStyle
  */
 object SdkKV {
 
+    /** ---------↓↓↓---------  通用类型  ---------↓↓↓--------- **/
+
+    fun setInt(key: String, value: Int) {
+        TPS.set(key, value)
+    }
+
+    fun getInt(key: String, default: Int = 0): Int = TPS.get(key, default)
+
+    fun setString(key: String, value: String) {
+        TPS.set(key, value)
+    }
+
+    fun getString(key: String, default: String = ""): String = TPS.get(key, default)
+
+    /** ---------↑↑↑------------------------↑↑↑--------- **/
+
     /**
      * 设置是否跟随系统亮度
      */
@@ -85,27 +101,29 @@ object SdkKV {
 
     fun isDefaultTextSize() = TPS.get(shared_read_is_text_default, false)
 
-    fun setDefaultTextSize(isDefault: Boolean){
+    fun setDefaultTextSize(isDefault: Boolean) {
         TPS.set(shared_read_is_text_default, isDefault)
     }
 
-    fun setPageMode(mode : PageMode){
+    fun setPageMode(mode: PageMode) {
         TPS.set(shared_read_page_mode, mode.ordinal)
     }
 
     /**
      * 获取当前阅读模式
      */
-    fun getPageMode() = PageMode.values()[TPS.get(shared_read_page_mode, PageMode.TURN_PAGE.ordinal)]
+    fun getPageMode() =
+        PageMode.values()[TPS.get(shared_read_page_mode, PageMode.TURN_PAGE.ordinal)]
 
-    fun setPageStyle(pageStyle : PageStyle){
+    fun setPageStyle(pageStyle: PageStyle) {
         TPS.set(shared_read_bg_page_style, pageStyle.ordinal)
     }
 
     /**
      * 获取当前设置的背景样式
      */
-    fun getPageStyle() = PageStyle.values()[TPS.get(shared_read_bg_page_style, PageStyle.BG_0.ordinal)]
+    fun getPageStyle() =
+        PageStyle.values()[TPS.get(shared_read_bg_page_style, PageStyle.BG_0.ordinal)]
 }
 
 // 是否跟随系统亮度key

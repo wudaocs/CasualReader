@@ -52,6 +52,9 @@ public class BookEntity implements Serializable {
     private int chaptersCount;
     private String lastChapter;
 
+    // 书籍类型  txt epub pdf等
+    private String type;
+
     //是否更新或未阅读
     private boolean isUpdate = true;
     //是否是本地文件
@@ -66,10 +69,10 @@ public class BookEntity implements Serializable {
     @Generated(hash = 492744051)
     private transient BookEntityDao myDao;
 
-    @Generated(hash = 298493127)
+    @Generated(hash = 1169828249)
     public BookEntity(String _id, String title, String author, String shortIntro, String cover,
             boolean hasCp, int latelyFollower, double retentionRatio, String updated, String lastRead,
-            int chaptersCount, String lastChapter, boolean isUpdate, boolean isLocal) {
+            int chaptersCount, String lastChapter, String type, boolean isUpdate, boolean isLocal) {
         this._id = _id;
         this.title = title;
         this.author = author;
@@ -82,6 +85,7 @@ public class BookEntity implements Serializable {
         this.lastRead = lastRead;
         this.chaptersCount = chaptersCount;
         this.lastChapter = lastChapter;
+        this.type = type;
         this.isUpdate = isUpdate;
         this.isLocal = isLocal;
     }
@@ -311,5 +315,13 @@ public class BookEntity implements Serializable {
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getBookEntityDao() : null;
+    }
+
+    public String getType() {
+        return this.type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

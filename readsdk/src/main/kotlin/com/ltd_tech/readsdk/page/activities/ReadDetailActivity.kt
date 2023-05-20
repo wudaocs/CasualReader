@@ -125,7 +125,6 @@ class ReadDetailActivity : MBaseActivity<ActivityReadDetailBinding, ReadDetailVi
         // 显示返回按钮
         bind.toolbar.run {
             title = mBookEntity?.title
-
             supportActionBar(this)
         }
 
@@ -169,13 +168,6 @@ class ReadDetailActivity : MBaseActivity<ActivityReadDetailBinding, ReadDetailVi
 
         //初始化BottomMenu
         initBottomMenu()
-
-    }
-
-    /**
-     * 设置设置功能相关的UI
-     */
-    private fun setSettingUI() {
 
     }
 

@@ -2,6 +2,7 @@ package com.ltd_tech.readsdk.utils
 
 import com.ltd_tech.core.FILE_SUFFIX_CR
 import com.ltd_tech.core.cacheBookDir
+import com.ltd_tech.core.utils.CRFileType
 import com.ltd_tech.core.utils.DateUtils
 import com.ltd_tech.core.utils.L
 import com.ltd_tech.core.utils.MD5
@@ -101,7 +102,16 @@ object DataControls {
             if (!file.exists()) continue
             val bookEntity = BookEntity()
             bookEntity._id = MD5.strToMd5By16(file.absolutePath)
-            bookEntity.title = file.name.replace(".txt", "")
+            if (file.name.endsWith(CRFileType.PDF.value)){
+                bookEntity.title = file.name.replace(".pdf", "")
+                bookEntity.type = CRFileType.PDF.value
+            } else if (file.name.endsWith(CRFileType.EPUB.value)){
+                bookEntity.title = file.name.replace(".epub", "")
+                bookEntity.type = CRFileType.EPUB.value
+            } else {
+                bookEntity.title = file.name.replace(".txt", "")
+                bookEntity.type = CRFileType.TXT.value
+            }
             bookEntity.author = ""
             bookEntity.shortIntro = "无"
             bookEntity.cover = file.absolutePath

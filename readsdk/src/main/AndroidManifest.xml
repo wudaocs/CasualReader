@@ -6,5 +6,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
             />
+        <activity android:name="com.ltd_tech.readsdk.page.activities.ReadPdfOrEpubActivity"
+            android:screenOrientation="portrait"/>
     </application>
 </manifest>

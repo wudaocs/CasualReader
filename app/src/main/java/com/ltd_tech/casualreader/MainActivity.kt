@@ -10,8 +10,9 @@ import com.ltd_tech.core.MBaseActivity
 import com.ltd_tech.core.exts.toast
 import com.ltd_tech.core.utils.PermissionsUtils
 import com.ltd_tech.readsdk.page.activities.ReadDetailViewModel
-import com.ltd_tech.readsdk.page.jumpToReadDetail
+import com.ltd_tech.readsdk.page.jumpToRead
 import com.ltd_tech.readsdk.utils.DataControls
+import kotlinx.coroutines.GlobalScope
 import java.io.File
 import java.io.FileOutputStream
 
@@ -33,23 +34,45 @@ class MainActivity : MBaseActivity<ActivityMainBinding, ReadDetailViewModel>() {
         mPermissionsUtils = PermissionsUtils(this)
         checkPermissions()
 
-        bind.btnRead.setOnClickListener {
-            jumpToReadDetail(
-                this@MainActivity,
-                true,
-                DataControls.saveLocal("${Environment.getExternalStorageDirectory().absolutePath}/Download/中外名人成功故事.txt")
-            )
+        bind.btnReadTxt.setOnClickListener {
+
+            jumpToRead(this@MainActivity,
+                DataControls.saveLocal("${Environment.getExternalStorageDirectory().absolutePath}/Download/中外名人成功故事.txt"))
+
+//            jumpToReadDetail(
+//                this@MainActivity,
+//                true,
+//                DataControls.saveLocal("${Environment.getExternalStorageDirectory().absolutePath}/Download/中外名人成功故事.txt")
+//            )
+        }
+
+        bind.btnReadPdf.setOnClickListener {
+            jumpToRead(this@MainActivity,
+                DataControls.saveLocal("${Environment.getExternalStorageDirectory().absolutePath}/Download/Jetpack Compose 入门到精通.pdf"))
+        }
+
+        bind.btnReadEpub.setOnClickListener {
+            jumpToRead(this@MainActivity,
+                DataControls.saveLocal("${Environment.getExternalStorageDirectory().absolutePath}/Download/作战篇.epub"))
         }
 
     }
 
+    /**
+     * 同步文件操作
+     */
+    private fun syncFile(){
+        dealFile("中外名人成功故事.txt")
+        dealFile("Jetpack Compose 入门到精通.pdf")
+        dealFile("作战篇.epub")
+    }
 
     /**
      * 需要在有权限之后处理文件
      */
-    private fun dealFile() {
+    private fun dealFile(fileName : String) {
         val file =
-            File("${Environment.getExternalStorageDirectory().absolutePath}/Download/中外名人成功故事.txt")
+            File("${Environment.getExternalStorageDirectory().absolutePath}/Download/$fileName")
         if (!file.exists()) {
             file.createNewFile()
         } else {
@@ -58,7 +81,7 @@ class MainActivity : MBaseActivity<ActivityMainBinding, ReadDetailViewModel>() {
         }
 
         // 文件不存在 拷贝文件到该目录
-        copyFile(file)
+        copyFile(fileName,file)
     }
 
     private fun checkPermissions() {
@@ -74,16 +97,16 @@ class MainActivity : MBaseActivity<ActivityMainBinding, ReadDetailViewModel>() {
                 )
             } else {
                 isPermission = true
-                dealFile()
+                syncFile()
             }
         } else {
             isPermission = true
-            dealFile()
+            syncFile()
         }
     }
 
-    private fun copyFile(dest: File) {
-        assets.open("中外名人成功故事.txt").use { fis ->
+    private fun copyFile(fileName: String, dest: File) {
+        assets.open(fileName).use { fis ->
             FileOutputStream(dest).use { os ->
                 val buffer = ByteArray(1024)
                 var len: Int
@@ -106,7 +129,7 @@ class MainActivity : MBaseActivity<ActivityMainBinding, ReadDetailViewModel>() {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
                 ) {
                     isPermission = true
-                    dealFile()
+                    syncFile()
                 } else {
                     isPermission = false
                     toast("用户拒绝开启读写权限")
