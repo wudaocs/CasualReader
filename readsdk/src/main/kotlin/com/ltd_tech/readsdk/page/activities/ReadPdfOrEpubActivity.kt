@@ -27,7 +27,6 @@ import com.artifex.mupdf.viewer.OutlineItem
 import com.artifex.mupdf.viewer.PageAdapter
 import com.artifex.mupdf.viewer.PageView
 import com.artifex.mupdf.viewer.ReaderView
-import com.artifex.mupdf.viewer.ReaderView.ViewMapper
 import com.artifex.mupdf.viewer.SearchTask
 import com.artifex.mupdf.viewer.SearchTaskResult
 import com.ltd_tech.core.BaseViewModel
@@ -311,8 +310,9 @@ class ReadPdfOrEpubActivity : MBaseActivity<ActivityReadPdfOrEpubBinding, BaseVi
     }
 
     override fun onDestroy() {
-        mDocView?.applyToChildren(object : ViewMapper() {
-            fun applyToView(view: View) {
+        mDocView?.applyToChildren(object : ReaderView.ViewMapper() {
+
+            override fun applyToView(view: View?) {
                 (view as PageView).releaseBitmaps()
             }
         })

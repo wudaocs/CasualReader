@@ -40,12 +40,10 @@ fun jumpToRead(context: Context, bookEntity: BookEntity?) {
         }
 
         CRFileType.PDF.value -> {
-            globalToast("暂不支持pdf该文件格式")
             muPdf(context, bookEntity.cover)
         }
 
         CRFileType.EPUB.value -> {
-            globalToast("暂不支持epub文件格式")
             muPdf(context, bookEntity.cover)
         }
 
